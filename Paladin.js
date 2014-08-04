@@ -19,7 +19,8 @@ function Paladin(player, simDuration, raidBuffs, inactiveSpec, mopMode){
       cooldownRemaining: player.stats.mainHandSpeed
     },
     censure: {cooldown: 3, stacks: 0, lastTick: 0, lastApplied: 0},
-    executionSentence: { tickCount: 0, lastTick: 0}
+    executionSentence: { tickCount: 0, lastTick: 0},
+    lightsHammer: { tickCount: 0, lastTick: 0 }
   }
   var currentSeal = 'Truth';
   var combatLog = [];
