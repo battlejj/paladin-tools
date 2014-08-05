@@ -6,10 +6,10 @@ var _ = require('lodash')
 /* Lib Includes */
 var constants = require('./lib/constants.js')
   , utils = require('./lib/utils.js')
-  , player = require('./player.js');
+  , player = require('./player.js')
+  , abilities = require('./abilities/index');
 
 //TODO: Update player.js with values from Beta Player sheet
-
 function Paladin(player, duration){
   var that = this;
   this.configureAbilities(player.talents);
@@ -20,6 +20,10 @@ function Paladin(player, duration){
   this.name = player.name;
   this.holyPower = 0;
   this.currentSeal = 'Seal of Truth';
+
+  for(var n in abilities){
+    this[n] = new abilities[n](this);
+  }
 }
 
 Paladin.prototype.calculateWeaponSwing = function(){
@@ -28,7 +32,7 @@ Paladin.prototype.calculateWeaponSwing = function(){
   return (randomSwingDamage
     + ((this.stats.attackPower/constants.wod.attackPowerToDPS) * this.weapon.speed))
     * 1.3;
-}
+};
 
 Paladin.prototype.configureStats = function(player){
   var that = this;
@@ -48,7 +52,7 @@ Paladin.prototype.configureStats = function(player){
   this.weapon.realSpeed = function(){
     return that.weapon.speed * (1 + that.stats.hastePercent);
   }
-  this.weapon.nextSwing = this.realSpeed();
+  this.weapon.nextSwing = this.weapon.realSpeed();
   this.weapon.dps = player.items.mainHand.weaponInfo.dps;
 };
 
@@ -110,19 +114,19 @@ Paladin.prototype.isExecuteRange = function(){
   } else {
     return this.timeline.time > (this.timeline.duration * .80);
   }
-}
+};
 
 Paladin.prototype.isAvengingWrathing = function(){
   return this.abilities.avengingWrath.remaining_dur > 0;
-}
+};
 
 Paladin.prototype.isHolyAvengering = function(){
   return this.abilities.holyAvenger && this.abilities.holyAvenger.remaining_dur > 0;
-}
+};
 
 Paladin.prototype.hasPerk = function(perk){
   return this.perks.indexOf(perk) != -1;
-}
+};
 
 Paladin.prototype.configureAbilities = function(talents){
   var abilities = {
@@ -202,7 +206,7 @@ Paladin.prototype.configureDoTs = function(){
     executionSentence: { tickCount: 0, lastTick: 0, maxTicks: 10 },
     holyPrism: { tickCount: 0, lastTick: 0, maxTicks: 7 }
   }
-}
+};
 
 Paladin.prototype.configureTimeline = function(duration){
   this.timeline = {};
@@ -210,7 +214,7 @@ Paladin.prototype.configureTimeline = function(duration){
   this.timeline.log = [];
   this.timeline.time = '';
   this.timeline.gcd = 0;
-}
+};
 
 Paladin.prototype.advanceTime = function(time){
   this.timeline.time = math.round(this.timeline.time + time, 3);
@@ -229,7 +233,7 @@ Paladin.prototype.advanceTime = function(time){
       this.abilities[n].remaining_dur = 0;
     }
   }
-}
+};
 
 Paladin.prototype.log = function(ability, damage, isCrit, isMultistrike, isBuff, isFade){
   if(!isBuff) {
@@ -262,23 +266,27 @@ Paladin.prototype.log = function(ability, damage, isCrit, isMultistrike, isBuff,
 };
 
 Paladin.prototype.startSim = function(){
-  this.autoAttack();
-  this.censureTick();
-  this.executionSentence();
-  this.holyPrism();
+  this.AutoAttack.attempt();
+  this.Censure.tick();
+  this.ExecutionSentence.tick();
+  //this.holyPrism();
 
   if(!this.gcd > 0){
-    this.avengingWrath();
+    //this.avengingWrath();
+    this.ExecutionSentence.attempt();
+    this.CrusaderStrike.attempt();
   }
 
 };
 
 Paladin.prototype.calculateSimDPS = function(){
   var totalDamage = this.timeline.log.reduce(function(a, b){
-    return {damage: a.damage + b.damage};
+    return { damage: a.damage + b.damage };
   });
 
   debug('%s damage done', totalDamage.damage);
   debug('%s dps - %s over %s', totalDamage.damage/totalDamage, totalDamage.damage, this.duration);
 };
 
+var p = new Paladin(player);
+p.startSim();

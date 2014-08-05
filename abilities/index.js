@@ -1,10 +1,14 @@
 var _ = require('lodash');
-var ExecutionSentence = require('./ExecutionSentence');
+var AutoAttack = require('./AutoAttack')
+  , Censure = require('./Censure')
+  , CrusaderStrike = require('./CrusaderStrike')
+  , ExecutionSentence = require('./ExecutionSentence');
 
 var abilities = {
-  ExecutionSentence: ExecutionSentence
+  AutoAttack: AutoAttack
+  , Censure: Censure
+  , CrusaderStrike: CrusaderStrike
+  , ExecutionSentence: ExecutionSentence
 };
-
-
 
 module.exports = abilities;

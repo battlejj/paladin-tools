@@ -38,7 +38,7 @@ ExecutionSentence.prototype.calculateDamage = function(){
 
   //The amount of damage done depends on what tick we are currently on
   return Math.round(base
-    * constants.wod.executionSentenceTicks[this.tickCount -1]/100 * this.getModifier('Execution Sentence'));
+    * constants.wod.executionSentenceTicks[this.tickCount -1]/100 * this.getModifier(this.name));
 };
 
 ExecutionSentence.prototype.attempt = function(){

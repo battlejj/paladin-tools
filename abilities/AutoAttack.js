@@ -5,19 +5,18 @@ var Ability = require('./Ability')
   , constants = require('../lib/constants')
   , utils = require('../lib/utils');
 
-function CrusaderStrike(paladin){
+function AutoAttack(paladin){
   Ability.call(this, paladin);
-  this.name = 'Crusader Strike';
-  this.baseCooldown = 4.5;
-  this.cooldown = 0;
-  this.duration = 0;
+  this.name = 'Auto Attack';
+  this.baseCooldown = paladin.weapon.speed;
+  this.cooldown = paladin.weapon.realSpeed();
 }
 
-CrusaderStrike.prototype = Object.create(Ability.prototype);
-CrusaderStrike.prototype.constructor = CrusaderStrike;
+AutoAttack.prototype = Object.create(Ability.prototype);
+AutoAttack.prototype.constructor = AutoAttack;
 
-CrusaderStrike.prototype.attempt = function(){
-  if(this.cooldown > 0 || this.isGCD()){
+AutoAttack.prototype.attempt = function() {
+  if (this.cooldown > 0) {
     return false;
   }
 
@@ -28,16 +27,13 @@ CrusaderStrike.prototype.attempt = function(){
 
   this.multistrike(this.name, damage);
   this.applyCensure();
-  this.gainHolyPower();
-  this.applyHandOfLight(damage);
-  this.applyHastedGlobalCooldown();
 };
 
-CrusaderStrike.prototype.calculateDamage = function(){
+AutoAttack.prototype.calculateDamage = function(){
   var base = this.paladin.calculateWeaponSwing() * this.getModifier(this.name);
 
   //The amount of damage done depends on what tick we are currently on
   return this.armorMitigation(base);
 };
 
-module.exports = CrusaderStrike;
+module.exports = AutoAttack;

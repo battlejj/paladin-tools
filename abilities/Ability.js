@@ -3,14 +3,13 @@ var math = require('mathjs');
 var constants = require('../lib/constants')
   , utils = require('../lib/utils');
 
-function Ability(paladin){
+function Ability(paladin, censure){
   this.paladin = paladin;
   this.baseCooldown = 0;
-  this.baseDuration = 0;
   this.cooldown = 0;
   this.duration = 0;
 
-  this.censure = { stacks: 0, lastApplied: 0 };
+  this.censure = censure;
 
   this.perkModifiers = ['Crusader Strike', 'Judgment', 'Exorcism', 'Censure'];
   this.holyAvengerModifiers = ['Crusader Strike', 'Judgment', 'Exorcism'];
@@ -50,7 +49,11 @@ Ability.prototype.getHastedCooldown = function(){
 };
 
 Ability.prototype.applyHastedGlobalCooldown = function(){
-  this.paladin.timeline.gcd = math.round(this.getGlobalCooldown()/(1 + this.paladin.hastePercent), 2);
+  var hasteModifier = 1 + this.paladin.hastePercent/100;
+  var cooldown = math.round(this.getGlobalCooldown() / hasteModifier, 2);
+  this.paladin.timeline.gcd = cooldown > 1
+    ? cooldown
+    : 1;
 };
 
 Ability.prototype.isGCD = function(){
@@ -83,50 +86,14 @@ Ability.prototype.multistrike = function(ability, damage){
     crit = utils.isCrit(this.paladin.stats.crit);
     this.paladin.log(ability, crit ? damage * 2 : damage, crit, true);
   }
-}
+};
 
 Ability.prototype.applyGlobalCooldown = function(){
   this.paladin.timeline.gcd = this.getGlobalCooldown();
 };
 
 Ability.prototype.applyCensure = function(){
-  if(this.paladin.currentSeal === 'Seal of Truth'){
-    if(this.censure.stacks < 5){
-      this.censure.stacks = this.censure.stacks + 1;
-      this.censure.lastApplied = this.paladin.timeline.time;
-    } else {
-      this.censure.stacks = 5;
-      this.censure.lastApplied = this.paladin.timeline.time;
-    }
-
-    //This is our first censure application, so tick immediately
-    if(this.censure.stacks === 1){
-      this.censureTick()
-    }
-  }
-}
-
-Ability.prototype.censureTick = function(){
-  //If we haven't had a censure application in the last 15 seconds, drop off the censure stacks
-  if(this.paladin.timeline.time - this.censure.lastApplied > 15){
-    this.censure.stacks = 0;
-  }
-
-  var time = this.paladin.timeline.time;
-
-  if(this.censure.stacks > 0
-  && ((time - this.censure.lastTick >= 3) || time === this.censure.lastApplied)){
-    var ability = 'Censure';
-    var damage = Math.round(((this.paladin.stats.spellPower * .05148) * this.censure.stacks) * this.getModifier(ability));
-    var crit = utils.isCrit(this.paladin.stats.critPercent);
-    this.paladin.log(ability, crit ? damage * 2: damage, crit, false);
-
-    /*
-    Currently assuming censure cannot multistrike. If it can uncomment out the following line:
-    this.multistrike(ability, damage);
-     */
-    this.censure.lastTick = time;
-  }
+  this.paladin.Censure.applyCensure();
 };
 
 Ability.prototype.applyHandOfLight = function(damage){
