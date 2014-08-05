@@ -20,6 +20,7 @@ function Paladin(player, duration){
   this.name = player.name;
   this.holyPower = 0;
   this.currentSeal = 'Seal of Truth';
+  this.enemies = 1;
 
   for(var n in abilities){
     this[n] = new abilities[n](this);
@@ -117,11 +118,11 @@ Paladin.prototype.isExecuteRange = function(){
 };
 
 Paladin.prototype.isAvengingWrathing = function(){
-  return this.abilities.avengingWrath.remaining_dur > 0;
+  return this.AvengingWrath.duration > 0;
 };
 
 Paladin.prototype.isHolyAvengering = function(){
-  return this.abilities.holyAvenger && this.abilities.holyAvenger.remaining_dur > 0;
+  return this.HolyAvenger && this.HolyAvenger.duration > 0;
 };
 
 Paladin.prototype.hasPerk = function(perk){

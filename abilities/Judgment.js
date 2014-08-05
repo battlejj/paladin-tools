@@ -5,18 +5,18 @@ var Ability = require('./Ability')
   , constants = require('../lib/constants')
   , utils = require('../lib/utils');
 
-function CrusaderStrike(paladin){
+function Judgment(paladin){
   Ability.call(this, paladin);
-  this.name = 'Crusader Strike';
-  this.baseCooldown = 4.5;
+  this.name = 'Judgment';
+  this.baseCooldown = 6;
   this.cooldown = 0;
   this.duration = 0;
 }
 
-CrusaderStrike.prototype = Object.create(Ability.prototype);
-CrusaderStrike.prototype.constructor = CrusaderStrike;
+Judgment.prototype = Object.create(Ability.prototype);
+Judgment.prototype.constructor = Judgment;
 
-CrusaderStrike.prototype.attempt = function(){
+Judgment.prototype.attempt = function(){
   if(this.cooldown > 0 || this.isGCD()){
     return false;
   }
@@ -34,10 +34,12 @@ CrusaderStrike.prototype.attempt = function(){
   this.applyHastedGlobalCooldown();
 };
 
-CrusaderStrike.prototype.calculateDamage = function(){
-  var base = this.paladin.calculateWeaponSwing() * this.getModifier(this.name);
+Judgment.prototype.calculateDamage = function(){
+  var base = (this.paladin.stats.spellPower * .5021)
+  * (this.paladin.stats.attackPower * .6031)
+  * this.getModifier(this.name);
 
-  return this.armorMitigation(base);
+  return math.round(base);
 };
 
-module.exports = CrusaderStrike;
+module.exports = Judgment;

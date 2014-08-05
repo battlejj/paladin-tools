@@ -26,7 +26,12 @@ AutoAttack.prototype.attempt = function() {
   this.cooldown = this.getHastedCooldown();
 
   this.multistrike(this.name, damage);
+  this.sealOfTruth(damage, true);
   this.applyCensure();
+
+  if(utils.resetExorcism()){
+    this.paladin.Exorcism.cooldown = 0;
+  }
 };
 
 AutoAttack.prototype.calculateDamage = function(){

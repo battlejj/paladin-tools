@@ -11,8 +11,9 @@ function Ability(paladin, censure){
 
   this.censure = censure;
 
-  this.perkModifiers = ['Crusader Strike', 'Judgment', 'Exorcism', 'Censure'];
-  this.holyAvengerModifiers = ['Crusader Strike', 'Judgment', 'Exorcism'];
+  this.perkModifiers = ['Crusader Strike', 'Censure', 'Exorcism', 'Judgment'];
+  this.holyAvengerModifiers = ['Crusader Strike', 'Exorcism', 'Judgment'];
+  this.sealOfTruthAbilities = ['Auto Attack', 'Crusader Strike', 'Judgment', 'Templar\'s Verdict'];
 }
 
 Ability.prototype.getModifier = function(ability){
@@ -121,6 +122,26 @@ Ability.prototype.gainHolyPower = function(){
     this.paladin.holyPower = total;
   } else {
     this.paladin.holyPower = 5;
+  }
+};
+
+Ability.prototype.sealOfTruth = function(damage, wasMitigated){
+  //TODO: is seal of truth damage 12% of the unmitigated damage done by and attack or 12% of the post mitigation damage
+  //this makes a huge difference in seal of truth damage and testing seems to suggest it's pre-mitigation damage since its
+  //all holy damage
+  damage = wasMitigated ? damage / (1 - .3493) : damage;
+  damage = math.round(damage * .15);
+  this.paladin.log('Seal of Truth', damage, false, false);
+}
+
+Ability.prototype.spendHolyPower = function(hp){
+  var total = this.paladin.holyPower - hp;
+
+  if(total >= 0){
+    this.paladin.holyPower = total;
+  } else {
+    throw new Error('Spent more holy power than was available. Check your code.');
+    this.paladin.holyPower = 0;
   }
 };
 
