@@ -19,7 +19,8 @@ AvengingWrath.prototype = Object.create(Ability.prototype);
 AvengingWrath.prototype.constructor = AvengingWrath;
 
 AvengingWrath.prototype.attempt = function() {
-  if (this.cooldown > 0) {
+  if (this.cooldown > 0
+    || this.isGCD()) {
     return false;
   }
 
