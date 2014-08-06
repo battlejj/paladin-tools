@@ -31,7 +31,7 @@ TemplarsVerdict.prototype.attempt = function(){
 
 TemplarsVerdict.prototype.calculateDamage = function(){
   //A powerful weapon strike that deals 185% Physical damage.
-  var base = (this.paladin.calculateWeaponSwing() * 1.85) * this.getModifier(this.name);
+  var base = (this.paladin.calculateNormalizedWeaponSwing() * 1.85) * this.getModifier(this.name);
 
   return this.armorMitigation(base);
 };

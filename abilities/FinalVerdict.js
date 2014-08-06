@@ -31,7 +31,7 @@ FinalVerdict.prototype.attempt = function(){
 
 FinalVerdict.prototype.calculateDamage = function(){
   //280% holy damage
-  var base = (this.paladin.calculateWeaponSwing() * 2.8) * this.getModifier(this.name);
+  var base = (this.paladin.calculateNormalizedWeaponSwing() * 2.8) * this.getModifier(this.name);
 
   return math.round(base);
 };

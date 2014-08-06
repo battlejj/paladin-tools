@@ -18,7 +18,9 @@ HolyAvenger.prototype = Object.create(Ability.prototype);
 HolyAvenger.prototype.constructor = HolyAvenger;
 
 HolyAvenger.prototype.attempt = function() {
-  if (this.cooldown > 0) {
+  if (!this.paladin.abilities.lightsHammer
+    || this.cooldown > 0
+    || this.isGCD()) {
     return false;
   }
 

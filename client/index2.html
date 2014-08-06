@@ -1,0 +1,37 @@
+$(function () {
+$('#container').highcharts({
+chart: {
+type: 'spline'
+},
+title: {
+text: 'Snow depth at Vikjafjellet, Norway'
+},
+subtitle: {
+text: 'Irregular time data in Highcharts JS'
+},
+xAxis: {
+type: 'time',
+dateTimeLabelFormats: { // don't display the dummy year
+month: '%e. %b',
+year: '%b'
+},
+title: {
+text: 'time'
+}
+},
+yAxis: {
+title: {
+text: 'dps'
+},
+min: 0
+},
+tooltip: {
+headerFormat: '<b>{series.name}</b><br>',
+pointFormat: '{point.x:%e. %b}: {point.y:.2f} m'
+},
+
+series: [{
+name: '6 min fight',
+data: chart
+});
+});

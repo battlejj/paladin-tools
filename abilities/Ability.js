@@ -81,11 +81,11 @@ Ability.prototype.multistrike = function(ability, damage){
   //You get two independent chances to multistrike, each can independently crit
   //Log the multistrike as damage caused by the original ability. We can map reduce to determine what % of
   //Damage was caused by multistrike by using the multi field int he logs after the sim.
-  if(utils.isMultistrike(this.paladin.stats.multistrike)){
+  if(utils.isMultistrike(this.paladin.stats.multistrikePercent)){
     crit = utils.isCrit(this.paladin.stats.critPercent);
     this.paladin.log(ability, crit ? damage * 2 : damage, crit, true);
   }
-  if(utils.isMultistrike(this.paladin.stats.multistrike)){
+  if(utils.isMultistrike(this.paladin.stats.multistrikePercent)){
     crit = utils.isCrit(this.paladin.stats.critPercent);
     this.paladin.log(ability, crit ? damage * 2 : damage, crit, true);
   }

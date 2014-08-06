@@ -641,6 +641,7 @@ module.exports = {
     "haste": 38.397644,
     "hasteRating": 1200,
     "hasteRatingPercent": 38.397648,
+    "multistrikeRating": 506,
     "expertiseRating": 3053,
     "spellPower": 184,
     "spellPen": 0,

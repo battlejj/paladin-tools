@@ -38,6 +38,14 @@ Paladin.prototype.calculateWeaponSwing = function(){
     * 1.3;
 };
 
+Paladin.prototype.calculateNormalizedWeaponSwing = function(){
+  var randomSwingDamage = Math.round(_.random(this.weapon.minDamage, this.weapon.maxDamage));
+
+  return (randomSwingDamage
+    + ((this.stats.attackPower/constants.wod.attackPowerToDPS) * constants.wod.normalized2H))
+    * 1.3;
+};
+
 Paladin.prototype.configureStats = function(player){
   var that = this;
   this.level = player.level;
@@ -49,6 +57,7 @@ Paladin.prototype.configureStats = function(player){
   this.stats.masteryRating = player.stats.masteryRating;
   this.stats.hasteRating = player.stats.hasteRating;
   this.stats.multistrikeRating = player.stats.multistrikeRating || 0;
+  this.stats.multistrikePercent = this.stats.multistrikeRating/constants.wod.combatRatings[100].multi;
   this.stats.versatilityRating = player.stats.versatilityRating || 0;
 
   this.weapon = {};
@@ -158,8 +167,6 @@ Paladin.prototype.configureAbilities = function(talents){
     seraphim: {dur: 15, cd: 30, remaining_dur: 0, remaining_cd: 0},
     templarsVerdict: {dur: 0, cd: 0, remaining_dur: 0, remaining_cd: 0}
   };
-
-  console.log(talents)
 
   if(!_.where(talents, {'spell': {'name': 'Holy Avenger' } }).length){
     debug('Holy Avenger talent not found, removing ability');
@@ -281,8 +288,8 @@ Paladin.prototype.startSim = function(){
     this.a.Exorcism.attempt();
   }
   if(this.timeline.time >= this.timeline.duration){
-    console.log('sim over');
-    this.calculateSimDPS();
+    //console.log('sim over');
+    return math.round(this.calculateSimDPS());
   } else {
     this.advanceTime(.1);
     return this.startSim();
@@ -297,7 +304,10 @@ Paladin.prototype.calculateSimDPS = function(){
   var fs = require('fs');
   fs.writeFileSync('./output.json', JSON.stringify(this.timeline.log))
   debug('%s damage done', totalDamage.damage);
+  //console.log('%s damage done', totalDamage.damage);
   debug('%s dps - %s over %s', totalDamage.damage/this.timeline.duration, totalDamage.damage, this.timeline.duration);
+  //console.log('%s dps - %s over %s', totalDamage.damage/this.timeline.duration, totalDamage.damage, this.timeline.duration);
+  return totalDamage.damage/this.timeline.duration;
 };
 
 Paladin.prototype.raidBuffs = function(){
@@ -307,5 +317,17 @@ Paladin.prototype.raidBuffs = function(){
   this.raidBuffStats();
 }
 
-var p = new Paladin(player, 360);
-p.startSim();
+
+var results = [];
+var sims = 1;
+for(var i = 0; i < sims; i++){
+  var p = new Paladin(player, 360);
+  results[i] = p.startSim();
+}
+
+var total = results.reduce(function(a, b){
+ return a + b;
+})
+
+var avg = total/sims;
+console.log(avg);
