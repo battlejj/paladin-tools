@@ -31,7 +31,7 @@ Censure.prototype.tick = function(){
     && ((time - this.lastTick >= this.baseCooldown) || time === this.lastApplied)){
     var damage = this.calculateDamage();
     var crit = utils.isCrit(this.paladin.stats.critPercent);
-    this.paladin.log(this.name, damage, crit ? damage * 2 : damage, crit, false);
+    this.paladin.log(this.name, crit ? damage * 2 : damage, crit, false);
     /*
      Currently assuming censure cannot multistrike. If it can uncomment out the following line:
      this.multistrike(ability, damage);

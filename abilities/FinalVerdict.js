@@ -20,12 +20,11 @@ FinalVerdict.prototype.attempt = function(){
 
   var damage = this.calculateDamage();
   var crit = utils.isCrit(this.paladin.stats.critPercent);
-  this.paladin.log(this.name, damage, crit ? damage * 2 : damage, crit, false);
-
+  this.paladin.log(this.name, crit ? damage * 2 : damage, crit, false);
+  this.spendHolyPower(3);
   this.multistrike(this.name, damage);
   this.sealOfTruth(damage, true);
   this.applyCensure();
-  this.spendHolyPower(3);
   this.applyHandOfLight(damage);
   this.applyGlobalCooldown();
 };
@@ -36,3 +35,5 @@ FinalVerdict.prototype.calculateDamage = function(){
 
   return math.round(base);
 };
+
+module.exports = FinalVerdict;

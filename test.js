@@ -10,25 +10,28 @@ var constants = require('./lib/constants.js')
   , abilities = require('./abilities/index');
 
 //TODO: Update player.js with values from Beta Player sheet
-function Paladin(player, duration){
+function Paladin(player, duration, inactiveSpec){
   var that = this;
-  this.configureAbilities(player.talents);
+  var talents = inactiveSpec
+    ? (player.talents[0].selected ? player.talents[1] : player.talents[0].talents)
+    : (player.talents[0].selected ? player.talents[0] : player.talents[1].talents);
+  this.configureAbilities(talents);
   this.configureDraenorPerks();
-  this.configureDoTs();
   this.configureStats(player);
   this.configureTimeline(duration);
+  this.raidBuffs();
   this.name = player.name;
   this.holyPower = 0;
   this.currentSeal = 'Seal of Truth';
   this.enemies = 1;
-
+  this.a = {};
   for(var n in abilities){
-    this[n] = new abilities[n](this);
+    this.a[n] = new abilities[n](this);
   }
 }
 
 Paladin.prototype.calculateWeaponSwing = function(){
-  var randomSwingDamage = Math.round(_.random(this.weapon.exactMin, this.weapon.exactMax));
+  var randomSwingDamage = Math.round(_.random(this.weapon.minDamage, this.weapon.maxDamage));
 
   return (randomSwingDamage
     + ((this.stats.attackPower/constants.wod.attackPowerToDPS) * this.weapon.speed))
@@ -40,6 +43,8 @@ Paladin.prototype.configureStats = function(player){
   this.level = player.level;
   this.stats = {};
   this.stats.strength = player.stats.str;
+  this.stats.attackPower = this.stats.strength;
+  this.stats.spellPower = this.stats.strength;
   this.stats.critRating = player.stats.critRating;
   this.stats.masteryRating = player.stats.masteryRating;
   this.stats.hasteRating = player.stats.hasteRating;
@@ -51,7 +56,7 @@ Paladin.prototype.configureStats = function(player){
   this.weapon.maxDamage = player.items.mainHand.weaponInfo.damage.exactMax;
   this.weapon.speed = player.items.mainHand.weaponInfo.weaponSpeed;
   this.weapon.realSpeed = function(){
-    return that.weapon.speed * (1 + that.stats.hastePercent);
+    return that.weapon.speed/(1 + (that.stats.hastePercent/100));
   }
   this.weapon.nextSwing = this.weapon.realSpeed();
   this.weapon.dps = player.items.mainHand.weaponInfo.dps;
@@ -77,8 +82,14 @@ Paladin.prototype.configureDraenorPerks = function(){
   Mastery raid buff is 550 mastery rating
  */
 Paladin.prototype.raidBuffMastery = function(){
-  this.stats.masteryPercent = constants.wod.baseStats.mastery +
-    (this.stats.masteryPercent/constants.wod.combatRatings[100].masteryPercent + 550);
+  var baseMastery = constants.wod.baseStats.mastery;
+  var gearMastery = this.stats.masteryRating/constants.wod.combatRatings[100].mastery;
+  var buffMastery = 550/constants.wod.combatRatings[100].mastery;
+
+  var totalMastery = baseMastery + gearMastery + buffMastery;
+  var percent = totalMastery/100;
+
+  this.stats.masteryPercent = percent;
 };
 
 /*
@@ -118,11 +129,11 @@ Paladin.prototype.isExecuteRange = function(){
 };
 
 Paladin.prototype.isAvengingWrathing = function(){
-  return this.AvengingWrath.duration > 0;
+  return this.a.AvengingWrath.duration > 0;
 };
 
 Paladin.prototype.isHolyAvengering = function(){
-  return this.HolyAvenger && this.HolyAvenger.duration > 0;
+  return this.a.HolyAvenger && this.a.HolyAvenger.duration > 0;
 };
 
 Paladin.prototype.hasPerk = function(perk){
@@ -130,6 +141,7 @@ Paladin.prototype.hasPerk = function(perk){
 };
 
 Paladin.prototype.configureAbilities = function(talents){
+
   var abilities = {
     avengingWrath: {dur: 20, cd: 180, remaining_dur: 0, remaining_cd: 0},
     crusaderStrike: {dur: 0, cd: 4.5, remaining_dur: 0, remaining_cd: 0},
@@ -146,6 +158,8 @@ Paladin.prototype.configureAbilities = function(talents){
     seraphim: {dur: 15, cd: 30, remaining_dur: 0, remaining_cd: 0},
     templarsVerdict: {dur: 0, cd: 0, remaining_dur: 0, remaining_cd: 0}
   };
+
+  console.log(talents)
 
   if(!_.where(talents, {'spell': {'name': 'Holy Avenger' } }).length){
     debug('Holy Avenger talent not found, removing ability');
@@ -201,93 +215,97 @@ Paladin.prototype.configureAbilities = function(talents){
    this.abilities = abilities;
 };
 
-Paladin.prototype.configureDoTs = function(){
-  this.dots = {
-    censure: { cooldown: 3, stacks: 0, lastTick: 0, lastApplied: 0 },
-    executionSentence: { tickCount: 0, lastTick: 0, maxTicks: 10 },
-    holyPrism: { tickCount: 0, lastTick: 0, maxTicks: 7 }
-  }
-};
 
 Paladin.prototype.configureTimeline = function(duration){
   this.timeline = {};
   this.timeline.duration = duration;
   this.timeline.log = [];
-  this.timeline.time = '';
+  this.timeline.time = 0;
   this.timeline.gcd = 0;
 };
 
 Paladin.prototype.advanceTime = function(time){
   this.timeline.time = math.round(this.timeline.time + time, 3);
-  this.timeline.gcd = this.timeline.gcd - time;
-  this.autoAttack.remaining_cd = this.autoAttack.remaining_cd - time;
-  for(var n in this.abilities){
-    if(this.abilities[n].remaining_cd > 0){
-      this.abilities[n].remaining_cd = this.abilities[n].remaining_cd - time;
+  this.timeline.gcd = math.round(this.timeline.gcd - time, 2);
+  //this.a.AutoAttack.cooldown = this.a.AutoAttack.cooldown - time;
+  for(var n in this.a){
+    if(this.a[n].cooldown > 0){
+      this.a[n].cooldown = math.round(this.a[n].cooldown - time, 2);
     } else {
-      this.abilities[n].remaining_cd = 0;
+      this.a[n].cooldown = 0;
     }
 
-    if(this.abilities[n].remaining_dur > 0){
-      this.abilities[n].remaining_dur = this.abilities[n].remaining_dur - time;
-    } else {
-      this.abilities[n].remaining_dur = 0;
+    if(this.a[n].duration && this.a[n].duration > 0){
+      this.a[n].duration = math.round(this.a[n].duration - time, 2);
+    } else if(this.a[n].duration) {
+      this.a[n].duration = 0;
     }
   }
 };
 
 Paladin.prototype.log = function(ability, damage, isCrit, isMultistrike, isBuff, isFade){
-  if(!isBuff) {
-    this.timeline.log[this.timeline.log.length] = {
-      ability: ability,
-      damage: damage,
-      time: this.timeline.time,
-      multistrike: isMultistrike || false,
-      crit: isCrit || false
-    }
-  } else {
-    if(!isFade){
-      this.timeline.log[this.timeline.log.length] = {
-        ability: ability + ' cast.',
-        damage: damage,
-        time: this.timeline.time,
-        multistrike: isMultistrike || false,
-        crit: isCrit || false
-      }
-    } else {
-      this.timeline.log[this.timeline.log.length] = {
-        ability: ability + ' fades.',
-        damage: damage,
-        time: this.timeline.time,
-        multistrike: isMultistrike || false,
-        crit: isCrit || false
-      }
-    }
-  }
+  this.timeline.log[this.timeline.log.length] = {
+    ability: ability,
+    damage: damage,
+    time: this.timeline.time,
+    multistrike: isMultistrike || false,
+    crit: isCrit || false,
+    holyPower: this.holyPower
+  };
+
+  return this.timeline.log[this.timeline.log.length-1]
 };
 
 Paladin.prototype.startSim = function(){
-  this.AutoAttack.attempt();
-  this.Censure.tick();
-  this.ExecutionSentence.tick();
-  //this.holyPrism();
+  this.a.Censure.tick();
+  this.a.AutoAttack.attempt();
+  this.a.ExecutionSentence.tick();
+  this.a.LightsHammer.tick();
 
-  if(!this.gcd > 0){
-    //this.avengingWrath();
-    this.ExecutionSentence.attempt();
-    this.CrusaderStrike.attempt();
+  //console.log('gcd exterior', this.timeline.gcd)
+
+  if(this.timeline.gcd <= 0){
+    this.a.AvengingWrath.attempt();
+    this.a.HolyAvenger.attempt();
+    this.a.ExecutionSentence.attempt();
+    this.a.LightsHammer.attempt();
+
+    if(this.holyPower === 5){
+      this.a.FinalVerdict.attempt();
+      this.a.TemplarsVerdict.attempt();
+    }
+
+    this.a.HammerOfWrath.attempt();
+    this.a.CrusaderStrike.attempt();
+    this.a.Judgment.attempt();
+    this.a.Exorcism.attempt();
   }
-
+  if(this.timeline.time >= this.timeline.duration){
+    console.log('sim over');
+    this.calculateSimDPS();
+  } else {
+    this.advanceTime(.1);
+    return this.startSim();
+  }
 };
 
 Paladin.prototype.calculateSimDPS = function(){
   var totalDamage = this.timeline.log.reduce(function(a, b){
     return { damage: a.damage + b.damage };
   });
-
+  //console.log(this.timeline.log)
+  var fs = require('fs');
+  fs.writeFileSync('./output.json', JSON.stringify(this.timeline.log))
   debug('%s damage done', totalDamage.damage);
-  debug('%s dps - %s over %s', totalDamage.damage/totalDamage, totalDamage.damage, this.duration);
+  debug('%s dps - %s over %s', totalDamage.damage/this.timeline.duration, totalDamage.damage, this.timeline.duration);
 };
 
-var p = new Paladin(player);
+Paladin.prototype.raidBuffs = function(){
+  this.raidBuffCrit();
+  this.raidBuffHaste();
+  this.raidBuffMastery();
+  this.raidBuffStats();
+}
+
+var p = new Paladin(player, 360);
 p.startSim();

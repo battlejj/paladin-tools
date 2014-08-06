@@ -8,8 +8,8 @@ var Ability = require('./Ability')
 function AutoAttack(paladin){
   Ability.call(this, paladin);
   this.name = 'Auto Attack';
-  this.baseCooldown = paladin.weapon.speed;
-  this.cooldown = paladin.weapon.realSpeed();
+  this.baseCooldown = this.paladin.weapon.speed;
+  this.cooldown = this.paladin.weapon.realSpeed();
 }
 
 AutoAttack.prototype = Object.create(Ability.prototype);
@@ -22,22 +22,21 @@ AutoAttack.prototype.attempt = function() {
 
   var damage = this.calculateDamage();
   var crit = utils.isCrit(this.paladin.stats.critPercent);
-  this.paladin.log(this.name, damage, crit ? damage * 2 : damage, crit, false);
-  this.cooldown = this.getHastedCooldown();
+  this.paladin.log(this.name, crit ? damage * 2 : damage, crit, false);
+  this.cooldown = this.paladin.weapon.realSpeed();
 
   this.multistrike(this.name, damage);
   this.sealOfTruth(damage, true);
   this.applyCensure();
 
   if(utils.resetExorcism()){
-    this.paladin.Exorcism.cooldown = 0;
+    this.paladin.a.Exorcism.cooldown = 0;
   }
 };
 
 AutoAttack.prototype.calculateDamage = function(){
   var base = this.paladin.calculateWeaponSwing() * this.getModifier(this.name);
 
-  //The amount of damage done depends on what tick we are currently on
   return this.armorMitigation(base);
 };
 

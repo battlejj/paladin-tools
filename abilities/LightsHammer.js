@@ -25,7 +25,7 @@ LightsHammer.prototype.tick = function(){
     && (this.paladin.timeline.time - this.lastTick >= 2)){
     damage = this.calculateDamage();
     crit = utils.isCrit(this.paladin.stats.critPercent);
-    this.paladin.log(this.name, damage, crit, crit ? damage * 2 : damage, false);
+    this.paladin.log(this.name, crit ? damage * 2 : damage, crit, false);
     this.multistrike(this.name, damage);
     this.lastTick = this.paladin.timeline.time;
     this.tickCount = this.tickCount - 1;
@@ -39,10 +39,9 @@ LightsHammer.prototype.calculateDamage = function(){
 };
 
 LightsHammer.prototype.attempt = function(){
-  if((this.paladin.abilities
-    && this.paladin.abilities.lightsHammer
-    && this.cooldown > 0)
-    || this.paladin.timeline.gcd > 0){
+  if(!this.paladin.abilities.lightsHammer
+    || this.cooldown > 0
+    || this.isGCD()){
     return false;
   }
 

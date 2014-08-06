@@ -46,11 +46,13 @@ Ability.prototype.armorMitigation = function(damage){
 };
 
 Ability.prototype.getHastedCooldown = function(){
-  return math.round(this.baseCooldown/(1 + this.paladin.hastePercent), 2);
+  var hasteModifier = 1 + this.paladin.stats.hastePercent/100;
+
+  return math.round(this.baseCooldown/hasteModifier, 2);
 };
 
 Ability.prototype.applyHastedGlobalCooldown = function(){
-  var hasteModifier = 1 + this.paladin.hastePercent/100;
+  var hasteModifier = 1 + this.paladin.stats.hastePercent/100;
   var cooldown = math.round(this.getGlobalCooldown() / hasteModifier, 2);
   this.paladin.timeline.gcd = cooldown > 1
     ? cooldown
@@ -80,29 +82,32 @@ Ability.prototype.multistrike = function(ability, damage){
   //Log the multistrike as damage caused by the original ability. We can map reduce to determine what % of
   //Damage was caused by multistrike by using the multi field int he logs after the sim.
   if(utils.isMultistrike(this.paladin.stats.multistrike)){
-    crit = utils.isCrit(this.paladin.stats.crit);
+    crit = utils.isCrit(this.paladin.stats.critPercent);
     this.paladin.log(ability, crit ? damage * 2 : damage, crit, true);
   }
   if(utils.isMultistrike(this.paladin.stats.multistrike)){
-    crit = utils.isCrit(this.paladin.stats.crit);
+    crit = utils.isCrit(this.paladin.stats.critPercent);
     this.paladin.log(ability, crit ? damage * 2 : damage, crit, true);
   }
 };
 
 Ability.prototype.applyGlobalCooldown = function(){
+  //console.log('GCD applied by:', this.name);
   this.paladin.timeline.gcd = this.getGlobalCooldown();
 };
 
 Ability.prototype.applyCensure = function(){
-  this.paladin.Censure.applyCensure();
+  this.paladin.a.Censure.applyCensure();
 };
 
 Ability.prototype.applyHandOfLight = function(damage){
   var ability = 'Hand of Light';
   var crit = utils.isCrit(this.paladin.stats.critPercent);
-  damage = Math.round(damage * (this.paladin.stats.masteryPercent/100));
-
-  this.paladin.log(ability, damage, crit ? damage * 2 : damage, crit, false);
+  var modifier = this.paladin.stats.masteryPercent;
+  //console.log('MASTERY MODIFIER', modifier)
+  damage = Math.round(damage * modifier);
+  //console.log('HAND OF LIGHT', damage)
+  this.paladin.log(ability, crit ? damage * 2 : damage, crit, false);
   //TODO: Check if Hand of Light can actually proc multistrike, assuming it can't right now
   //this.multistrike(damage, ability);
 

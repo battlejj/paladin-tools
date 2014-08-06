@@ -23,7 +23,7 @@ Judgment.prototype.attempt = function(){
 
   var damage = this.calculateDamage();
   var crit = utils.isCrit(this.paladin.stats.critPercent);
-  this.paladin.log(this.name, damage, crit ? damage * 2 : damage, crit, false);
+  this.paladin.log(this.name, crit ? damage * 2 : damage, crit, false);
   this.cooldown = this.getHastedCooldown();
 
   this.multistrike(this.name, damage);
@@ -35,8 +35,7 @@ Judgment.prototype.attempt = function(){
 };
 
 Judgment.prototype.calculateDamage = function(){
-  var base = (this.paladin.stats.spellPower * .5021)
-  * (this.paladin.stats.attackPower * .6031)
+  var base = ((this.paladin.stats.spellPower * .5021) + (this.paladin.stats.attackPower * .6031))
   * this.getModifier(this.name);
 
   return math.round(base);

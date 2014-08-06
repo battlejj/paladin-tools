@@ -26,7 +26,7 @@ ExecutionSentence.prototype.tick = function(){
   && (this.paladin.timeline.time - this.lastTick >= 1)){
     damage = this.calculateDamage();
     crit = utils.isCrit(this.paladin.stats.critPercent);
-    this.paladin.log(this.name, damage, crit, crit ? damage * 2 : damage, false);
+    this.paladin.log(this.name, crit ? damage * 2 : damage, crit, false);
     this.multistrike(this.name, damage);
     this.lastTick = this.paladin.timeline.time;
     this.tickCount = this.tickCount - 1;
@@ -42,13 +42,12 @@ ExecutionSentence.prototype.calculateDamage = function(){
 };
 
 ExecutionSentence.prototype.attempt = function(){
-  if((this.paladin.abilities
-    && this.paladin.abilities.executionSentence
-    && this.cooldown > 0)
-    || this.paladin.timeline.gcd > 0){
+
+  if(!this.paladin.abilities.executionSentence
+    || this.cooldown > 0
+    || this.isGCD()){
       return false;
   }
-
   this.tickCount = 10;
   this.cooldown = this.baseCooldown;
   this.tick();

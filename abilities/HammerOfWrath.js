@@ -22,7 +22,7 @@ HammerOfWrath.prototype.attempt = function(){
 
   var damage = this.calculateDamage();
   var crit = utils.isCrit(this.paladin.stats.critPercent);
-  this.paladin.log(this.name, damage, crit ? damage * 2 : damage, crit, false);
+  this.paladin.log(this.name, crit ? damage * 2 : damage, crit, false);
   this.cooldown = this.paladin.isAvengingWrathing() ? this.getHastedCooldown()/2 : this.getHastedCooldown();
 
   this.multistrike(this.name, damage);

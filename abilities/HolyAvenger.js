@@ -21,6 +21,8 @@ HolyAvenger.prototype.attempt = function() {
   if (this.cooldown > 0) {
     return false;
   }
+
+  this.paladin.log(this.name, 0, false, false);
   this.cooldown = this.baseCooldown;
   this.duration = this.baseDuration;
   this.applyGlobalCooldown();
