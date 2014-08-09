@@ -34,7 +34,7 @@
     }
     //timeChart[currentSecond] = timeChart[currentSecond] ? timeChart[currentSecond] + item.damage : item.damage;
   })
-  /*
+
   var abilities = {};
   output.map(function(ability){
     if(!abilities[ability.ability]){
@@ -48,34 +48,6 @@
       abilities[ability.ability].crit += ability.damage;
     } else {
       abilities[ability.ability].normal += ability.damage;
-    }
-  });
-  */
-  var abilities = {};
-
-  output.map(function(ability){
-    var words = ability.ability.split(' ');
-    var shortName = '';
-    if(words.length > 1){
-      for(var i in words){
-        shortName = shortName + words[i].slice(0, 1);
-      }
-    } else {
-      shortName = words[0].slice(0, 2).toUpperCase();
-    }
-
-    console.log(shortName)
-    if(!abilities[shortName]){
-      abilities[shortName]= {total: 0, normal: 0, crit: 0, multi: 0};
-    }
-
-    abilities[shortName].total += ability.damage;
-    if(ability.multistrike){
-      abilities[shortName].multi += ability.damage;
-    } else if(ability.crit) {
-      abilities[shortName].crit += ability.damage;
-    } else {
-      abilities[shortName].normal += ability.damage;
     }
   });
 

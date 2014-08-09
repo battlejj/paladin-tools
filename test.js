@@ -302,7 +302,7 @@ Paladin.prototype.calculateSimDPS = function(){
   });
   //console.log(this.timeline.log)
   var fs = require('fs');
-  fs.writeFileSync('./output.json', JSON.stringify(this.timeline.log))
+  fs.writeFileSync('./client/js/output.js', 'var output = ' + JSON.stringify(this.timeline.log) + ';');
   debug('%s damage done', totalDamage.damage);
   //console.log('%s damage done', totalDamage.damage);
   debug('%s dps - %s over %s', totalDamage.damage/this.timeline.duration, totalDamage.damage, this.timeline.duration);

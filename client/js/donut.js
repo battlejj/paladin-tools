@@ -47,13 +47,13 @@ $('#donut').highcharts({
   series: [{
     name: 'Abilities',
     data: abilityData,
-    size: '80%',
+    size: '70%',
     dataLabels: {
       formatter: function() {
         return this.y > 5 ? this.point.name : null;
       },
-      color: 'white',
-      distance: -80
+      //color: 'white',
+      distance: 100
     }
   }, {
     name: 'Type',
@@ -63,8 +63,12 @@ $('#donut').highcharts({
     dataLabels: {
       formatter: function() {
         // display only if larger than 1
-        return this.y > 1 ? '<b>'+ this.point.name +':</b> '+ this.y  : null;
       }
     }
   }]
 });
+
+
+
+
+
