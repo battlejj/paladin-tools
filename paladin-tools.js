@@ -166,7 +166,6 @@ Paladin.prototype.raidBuffMastery = function(){
   var attunedMasteryRating = (gearMasteryRating + buffMasteryRating) * 1.05;
   var additionalMasteryPercent = attunedMasteryRating/constants.wod.combatRatings[100].mastery;
 
-
   var totalMastery = baseMasteryPercent + additionalMasteryPercent;
   this.stats.masteryPercent = math.round(totalMastery, 2);
 };
@@ -333,30 +332,48 @@ Paladin.prototype.simulate = function(){
   }
 };
 
+Paladin.prototype.resetTimeline = function(){
+  this.timeline.time = 0;
+  this.timeline.gcd = 0;
+  this.timeline.log = [];
+  this.damageStats = {};
+
+
+  for(var n in this.abilities) {
+    if(this.abilities.hasOwnProperty(n)){
+      this.abilities[n].resetCooldown();
+      this.abilities[n].resetDuration();
+    }
+  }
+
+}
+
 Paladin.prototype.start = function(duration, sims){
   this.damageStats = {};
   this.configureTimeline(duration || 360);
   this.configureStats();
   sims = sims || 1;
-  /*var results = {}, res;
+
+  console.log('Run %s sims', sims)
+
+  var results = {};
   for(var i = 0; i < sims; i++){
-    res = this.simulate();
-    for(var key in res){
-      results[key] = results[key] ? (results[key] + res[key]) : res[key];
+    var sim = this.simulate();
+    for(var k in sim){
+      if(sim.hasOwnProperty(k)){
+        results[k] = results[k] ? (results[k] + sim[k]) : sim[k];
+      }
+    }
+    this.resetTimeline();
+  }
+
+  for(var k in results){
+    if(sim.hasOwnProperty(k)){
+      results[k] = math.round(results[k]/sims, 2);
     }
   }
 
-  //console.log(results);
-
-  for(var key in results){
-    results[key] = math.round(results[key]/sims, 1);
-  }
-
-  results.dps = math.round(results.total/duration, 1);
   return results;
-  */
-  var test = this.simulate();
-  return test.total/duration;
 
 }
 
@@ -380,8 +397,8 @@ Paladin.prototype.calculateWeaponSwing = function(){
     , attackPower = this.stats.attackPower
     ;
 
-  //random = _.random(min, max, false);
-  random = (min + max)/2;
+  random = _.random(min, max, false);
+  //random = (min + max)/2;
   damage = random + (speed * attackPower / ratio) * 1.3;
   damage = math.round(damage);
   return damage;
@@ -397,8 +414,8 @@ Paladin.prototype.calculateNormalizedWeaponSwing = function(){
     , attackPower = this.stats.attackPower
     ;
 
-  //random = _.random(min, max, false);
-  random = (min + max)/2;
+  random = _.random(min, max, false);
+  //random = (min + max)/2;
   damage = random + (speed * attackPower / ratio) * 1.3;
   damage = math.round(damage);
 
@@ -406,9 +423,5 @@ Paladin.prototype.calculateNormalizedWeaponSwing = function(){
 
   return damage;
 };
-
-var paladin = new Paladin();
-
-paladin.start()
 
 module.exports = Paladin;

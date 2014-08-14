@@ -6,14 +6,36 @@ var ret = require('./paladin-factory');
 angular.module('wt.paladin', [])
   .factory('ret', ret);
 
-  angular.module('wt', ['wt.paladin'])
+  angular.module('wt', ['wt.paladin', 'highcharts-ng'])
   .controller('home', function($scope, ret){
+    $scope.sims = 50;
+    $scope.duration = 360;
     $scope.pally = new ret.Paladin();
     $scope.constants = constants;
     $scope.damage = 0;
+    git
+
+    $scope.updateChartData = function(){
+      var abilityData = [];
+      var categories = [];
+      for(var k in $scope.damage){
+        if($scope.damage.hasOwnProperty(k)
+          && k != 'total'
+          && k.indexOf('Count') == -1
+          && k.indexOf('multi') == -1
+          && k.indexOf('crit') == -1){
+          categories.push(k);
+          console.log($scope.damage[k], '/', $scope.damage.total, '=', $scope.damage[k]/$scope.damage.total * 100)
+          abilityData.push({name: k + ' - ' + Math.round($scope.damage[k]/$scope.damage.total * 100) + '%', y: $scope.damage[k]});
+        }
+      }
+      $scope.chartConfig.series = [{data: abilityData}];
+    }
+
     $scope.sim = function(){
-      $scope.damage = $scope.pally.start(360, 1);
-      console.log($scope.damage)
+      $scope.damage = $scope.pally.start($scope.duration, $scope.sims);
+      console.log($scope.damage);
+      $scope.updateChartData();
     }
 
     $scope.getDPS = function(){
@@ -53755,7 +53777,6 @@ Paladin.prototype.raidBuffMastery = function(){
   var attunedMasteryRating = (gearMasteryRating + buffMasteryRating) * 1.05;
   var additionalMasteryPercent = attunedMasteryRating/constants.wod.combatRatings[100].mastery;
 
-
   var totalMastery = baseMasteryPercent + additionalMasteryPercent;
   this.stats.masteryPercent = math.round(totalMastery, 2);
 };
@@ -53922,30 +53943,48 @@ Paladin.prototype.simulate = function(){
   }
 };
 
+Paladin.prototype.resetTimeline = function(){
+  this.timeline.time = 0;
+  this.timeline.gcd = 0;
+  this.timeline.log = [];
+  this.damageStats = {};
+
+
+  for(var n in this.abilities) {
+    if(this.abilities.hasOwnProperty(n)){
+      this.abilities[n].resetCooldown();
+      this.abilities[n].resetDuration();
+    }
+  }
+
+}
+
 Paladin.prototype.start = function(duration, sims){
   this.damageStats = {};
   this.configureTimeline(duration || 360);
   this.configureStats();
   sims = sims || 1;
-  /*var results = {}, res;
+
+  console.log('Run %s sims', sims)
+
+  var results = {};
   for(var i = 0; i < sims; i++){
-    res = this.simulate();
-    for(var key in res){
-      results[key] = results[key] ? (results[key] + res[key]) : res[key];
+    var sim = this.simulate();
+    for(var k in sim){
+      if(sim.hasOwnProperty(k)){
+        results[k] = results[k] ? (results[k] + sim[k]) : sim[k];
+      }
+    }
+    this.resetTimeline();
+  }
+
+  for(var k in results){
+    if(sim.hasOwnProperty(k)){
+      results[k] = math.round(results[k]/sims, 2);
     }
   }
 
-  //console.log(results);
-
-  for(var key in results){
-    results[key] = math.round(results[key]/sims, 1);
-  }
-
-  results.dps = math.round(results.total/duration, 1);
   return results;
-  */
-  var test = this.simulate();
-  return test.total/duration;
 
 }
 
@@ -53969,8 +54008,8 @@ Paladin.prototype.calculateWeaponSwing = function(){
     , attackPower = this.stats.attackPower
     ;
 
-  //random = _.random(min, max, false);
-  random = (min + max)/2;
+  random = _.random(min, max, false);
+  //random = (min + max)/2;
   damage = random + (speed * attackPower / ratio) * 1.3;
   damage = math.round(damage);
   return damage;
@@ -53986,8 +54025,8 @@ Paladin.prototype.calculateNormalizedWeaponSwing = function(){
     , attackPower = this.stats.attackPower
     ;
 
-  //random = _.random(min, max, false);
-  random = (min + max)/2;
+  random = _.random(min, max, false);
+  //random = (min + max)/2;
   damage = random + (speed * attackPower / ratio) * 1.3;
   damage = math.round(damage);
 
@@ -53995,10 +54034,6 @@ Paladin.prototype.calculateNormalizedWeaponSwing = function(){
 
   return damage;
 };
-
-var paladin = new Paladin();
-
-paladin.start()
 
 module.exports = Paladin;
 },{"./src/abilities/index":290,"./src/basePlayer.js":291,"./src/lib/constants.js":292,"./src/lib/utils.js":294,"debug":5,"lodash":8,"mathjs":9}],277:[function(require,module,exports){
@@ -54070,6 +54105,18 @@ Ability.prototype.isGCD = function(){
 Ability.prototype.getGlobalCooldown = function(){
   return constants.wod.globalCooldown;
 };
+
+Ability.prototype.resetCooldown = function(){
+  if(this.baseCooldown){
+    this.cooldown = this.baseCooldown;
+  }
+}
+
+Ability.prototype.resetDuration = function(){
+  if(this.baseDuration){
+    this.duration = this.baseDuration;
+  }
+}
 
 /*
   Multistrike gives an ability two chances to do 30% of the original abilities damage.

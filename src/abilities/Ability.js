@@ -67,6 +67,18 @@ Ability.prototype.getGlobalCooldown = function(){
   return constants.wod.globalCooldown;
 };
 
+Ability.prototype.resetCooldown = function(){
+  if(this.baseCooldown){
+    this.cooldown = this.baseCooldown;
+  }
+}
+
+Ability.prototype.resetDuration = function(){
+  if(this.baseDuration){
+    this.duration = this.baseDuration;
+  }
+}
+
 /*
   Multistrike gives an ability two chances to do 30% of the original abilities damage.
   Each individual multistrike can crit.

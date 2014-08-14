@@ -1,6 +1,12 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
 <head>
+  <meta charset="utf-8">
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title></title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.min.css">
   <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap-theme.min.css">
 </head>
@@ -44,13 +50,26 @@
         <input id="versatility-rating" ng-model="pally.baseStats.versatilityRating" placeholder="Versatility Rating">
         {{pally.stats.versatilityPercent}}%
       </div>
-      <h2>{{damage}}</h2>
+      <div ng-show="damage > 0">
+        <h2>{{damage}} damage over {{sims}} sims of {{duration}} seconds. {{damage/(duration*sims)}}DPS</h2>
+      </div>
+      <div class="form-group">
+        <label for="sims">Sims to run</label>
+        <input id="sims" ng-model="sims">
+      </div>
+
       <input type="submit" class="btn btn-primary" value="Sim">
+      <highchart id="chart1" config="chartConfig" class="span10"></highchart>
+
+      {{chartConfig}}
     </form>
   </div>
 </div>
 </div>
 <script src="js/index-browser.js"></script>
+<script src="../bower_components/highcharts/highcharts-all.js"></script>
+<script src="../bower_components/highcharts-ng/dist/highcharts-ng.js"></script>
+
 </body>
 
 </html>
