@@ -13,6 +13,7 @@ function ExecutionSentence(paladin){
   this.duration = 0;
   this.lastTick = 0;
   this.tickCount = 0;
+  this.enabled = false;
 }
 ExecutionSentence.prototype = Object.create(Ability.prototype);
 ExecutionSentence.prototype.constructor = ExecutionSentence;
@@ -20,8 +21,7 @@ ExecutionSentence.prototype.constructor = ExecutionSentence;
 ExecutionSentence.prototype.tick = function(){
   var damage
     , crit;
-  if(this.paladin.abilities
-  && this.paladin.abilities.executionSentence
+  if(this.enabled
   && this.tickCount > 0
   && (this.paladin.timeline.time - this.lastTick >= 1)){
     damage = this.calculateDamage();
@@ -37,13 +37,13 @@ ExecutionSentence.prototype.calculateDamage = function(){
   var base = this.paladin.stats.spellPower * 9142/1000;
 
   //The amount of damage done depends on what tick we are currently on
-  return Math.round(base
-    * constants.wod.executionSentenceTicks[this.tickCount -1]/100 * this.getModifier(this.name));
+  return Math.round(this.versatility(base
+    * constants.wod.executionSentenceTicks[this.tickCount -1]/100 * this.getModifier(this.name)));
 };
 
 ExecutionSentence.prototype.attempt = function(){
 
-  if(!this.paladin.abilities.executionSentence
+  if(!this.enabled
     || this.cooldown > 0
     || this.isGCD()){
       return false;

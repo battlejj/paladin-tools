@@ -30,12 +30,12 @@ AutoAttack.prototype.attempt = function() {
   this.applyCensure();
 
   if(utils.resetExorcism()){
-    this.paladin.a.Exorcism.cooldown = 0;
+    this.paladin.abilities.Exorcism.cooldown = 0;
   }
 };
 
 AutoAttack.prototype.calculateDamage = function(){
-  var base = this.paladin.calculateWeaponSwing() * this.getModifier(this.name);
+  var base = this.versatility(this.paladin.calculateWeaponSwing() * this.getModifier(this.name));
 
   return this.armorMitigation(base);
 };

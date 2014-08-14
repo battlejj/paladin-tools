@@ -9,10 +9,9 @@ function AvengingWrath(paladin){
   Ability.call(this, paladin);
   this.name = 'Avenging Wrath';
   this.baseCooldown = 180;
-  this.baseDuration = this.paladin.abilities.avengingWrath.sanctified ? 30 : 20;
+  this.baseDuration = 20;
   this.cooldown = 0;
   this.duration = 0;
-  console.log('duration', this.baseDuration)
 }
 
 AvengingWrath.prototype = Object.create(Ability.prototype);

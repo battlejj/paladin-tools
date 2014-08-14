@@ -41,7 +41,7 @@ Censure.prototype.tick = function(){
 };
 
 Censure.prototype.calculateDamage = function(){
-  return math.round(((this.paladin.stats.spellPower * .05148) * this.stacks) * this.getModifier(this.name));
+  return math.round(this.versatility(((this.paladin.stats.spellPower * .05148) * this.stacks) * this.getModifier(this.name)));
 };
 
 Censure.prototype.applyCensure = function(){

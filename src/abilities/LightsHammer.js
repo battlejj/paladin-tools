@@ -12,6 +12,7 @@ function LightsHammer(paladin){
   this.duration = 0;
   this.lastTick = 0;
   this.tickCount = 0;
+  this.enabled = false;
 }
 LightsHammer.prototype = Object.create(Ability.prototype);
 LightsHammer.prototype.constructor = LightsHammer;
@@ -19,8 +20,7 @@ LightsHammer.prototype.constructor = LightsHammer;
 LightsHammer.prototype.tick = function(){
   var damage
     , crit;
-  if(this.paladin.abilities
-    && this.paladin.abilities.lightsHammer
+  if(this.enabled
     && this.tickCount > 0
     && (this.paladin.timeline.time - this.lastTick >= 2)){
     damage = this.calculateDamage();
@@ -35,11 +35,11 @@ LightsHammer.prototype.tick = function(){
 LightsHammer.prototype.calculateDamage = function(){
   var base = this.paladin.stats.spellPower * .51678 * this.paladin.enemies;
 
-  return Math.round(base * this.getModifier(this.name));
+  return Math.round(this.versatility(base * this.getModifier(this.name)));
 };
 
 LightsHammer.prototype.attempt = function(){
-  if(!this.paladin.abilities.lightsHammer
+  if(!this.enabled
     || this.cooldown > 0
     || this.isGCD()){
     return false;

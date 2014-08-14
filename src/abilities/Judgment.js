@@ -5,38 +5,40 @@ var Ability = require('./Ability')
   , constants = require('../lib/constants')
   , utils = require('../lib/utils');
 
-function HammerOfWrath(paladin){
+function Judgment(paladin){
   Ability.call(this, paladin);
-  this.name = 'Hammer of Wrath';
+  this.name = 'Judgment';
   this.baseCooldown = 6;
   this.cooldown = 0;
+  this.duration = 0;
 }
 
-HammerOfWrath.prototype = Object.create(Ability.prototype);
-HammerOfWrath.prototype.constructor = HammerOfWrath;
+Judgment.prototype = Object.create(Ability.prototype);
+Judgment.prototype.constructor = Judgment;
 
-HammerOfWrath.prototype.attempt = function(){
-  if(this.cooldown > 0 || this.isGCD() || !(this.paladin.isExecuteRange() || this.paladin.isAvengingWrathing())){
+Judgment.prototype.attempt = function(){
+  if(this.cooldown > 0 || this.isGCD()){
     return false;
   }
 
   var damage = this.calculateDamage();
   var crit = utils.isCrit(this.paladin.stats.critPercent);
   this.paladin.log(this.name, crit ? damage * 2 : damage, crit, false);
-  this.cooldown = this.paladin.isAvengingWrathing() ? this.getHastedCooldown()/2 : this.getHastedCooldown();
+  this.cooldown = this.getHastedCooldown();
 
   this.multistrike(this.name, damage);
+  this.sealOfTruth(damage, true);
   this.applyCensure();
   this.gainHolyPower();
   this.applyHandOfLight(damage);
   this.applyHastedGlobalCooldown();
 };
 
-HammerOfWrath.prototype.calculateDamage = function(){
-  var base = (this.paladin.stats.spellPower * 2.112)
-    * this.getModifier(this.name);
+Judgment.prototype.calculateDamage = function(){
+  var base = this.versatility(((this.paladin.stats.spellPower * .5021) + (this.paladin.stats.attackPower * .6031))
+  * this.getModifier(this.name));
 
   return math.round(base);
 };
 
-module.exports = HammerOfWrath;
+module.exports = Judgment;

@@ -8,13 +8,14 @@ var Ability = require('./Ability')
 function TemplarsVerdict(paladin){
   Ability.call(this, paladin);
   this.name = 'Templar\'s Verdict';
+  this.enabled = true;
 }
 
 TemplarsVerdict.prototype = Object.create(Ability.prototype);
 TemplarsVerdict.prototype.constructor = TemplarsVerdict;
 
 TemplarsVerdict.prototype.attempt = function(){
-  if(!this.paladin.abilities.templarsVerdict || this.isGCD() || this.paladin.holyPower < 3){
+  if(!this.enabled || this.isGCD() || this.paladin.holyPower < 3){
     return false;
   }
 
@@ -31,7 +32,7 @@ TemplarsVerdict.prototype.attempt = function(){
 
 TemplarsVerdict.prototype.calculateDamage = function(){
   //A powerful weapon strike that deals 185% Physical damage.
-  var base = (this.paladin.calculateNormalizedWeaponSwing() * 1.85) * this.getModifier(this.name);
+  var base = this.versatility((this.paladin.calculateNormalizedWeaponSwing() * 1.85) * this.getModifier(this.name));
 
   return this.armorMitigation(base);
 };

@@ -8,13 +8,14 @@ var Ability = require('./Ability')
 function FinalVerdict(paladin){
   Ability.call(this, paladin);
   this.name = 'Final Verdict';
+  this.enabled = false;
 }
 
 FinalVerdict.prototype = Object.create(Ability.prototype);
 FinalVerdict.prototype.constructor = FinalVerdict;
 
 FinalVerdict.prototype.attempt = function(){
-  if(!this.paladin.abilities.finalVerdict || this.isGCD() || this.paladin.holyPower < 3){
+  if(!this.enabled || this.isGCD() || this.paladin.holyPower < 3){
     return false;
   }
 
@@ -31,7 +32,7 @@ FinalVerdict.prototype.attempt = function(){
 
 FinalVerdict.prototype.calculateDamage = function(){
   //280% holy damage
-  var base = (this.paladin.calculateNormalizedWeaponSwing() * 2.8) * this.getModifier(this.name);
+  var base = this.versatility((this.paladin.calculateNormalizedWeaponSwing() * 2.8) * this.getModifier(this.name));
 
   return math.round(base);
 };

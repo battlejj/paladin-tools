@@ -12,13 +12,14 @@ function HolyAvenger(paladin){
   this.baseDuration = 18;
   this.cooldown = 0;
   this.duration = 0;
+  this.enabled = false;
 }
 
 HolyAvenger.prototype = Object.create(Ability.prototype);
 HolyAvenger.prototype.constructor = HolyAvenger;
 
 HolyAvenger.prototype.attempt = function() {
-  if (!this.paladin.abilities.lightsHammer
+  if (!this.enabled
     || this.cooldown > 0
     || this.isGCD()) {
     return false;

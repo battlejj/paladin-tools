@@ -17,6 +17,7 @@
   },
   "scripts": {
     "test": "mocha"
+    , "browserify": "node_modules/.bin/cmd.js"
   },
   "repository": {
     "type": "git",

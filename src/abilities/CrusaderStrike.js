@@ -35,7 +35,7 @@ CrusaderStrike.prototype.attempt = function(){
 };
 
 CrusaderStrike.prototype.calculateDamage = function(){
-  var base = this.paladin.calculateNormalizedWeaponSwing() * this.getModifier(this.name);
+  var base = this.versatility(this.paladin.calculateNormalizedWeaponSwing() * this.getModifier(this.name));
 
   return this.armorMitigation(base);
 };

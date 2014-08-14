@@ -97,13 +97,13 @@ Ability.prototype.applyGlobalCooldown = function(){
 };
 
 Ability.prototype.applyCensure = function(){
-  this.paladin.a.Censure.applyCensure();
+  this.paladin.abilities.Censure.applyCensure();
 };
 
 Ability.prototype.applyHandOfLight = function(damage){
   var ability = 'Hand of Light';
   var crit = utils.isCrit(this.paladin.stats.critPercent);
-  var modifier = this.paladin.stats.masteryPercent;
+  var modifier = this.paladin.stats.masteryPercent/100;
   //console.log('MASTERY MODIFIER', modifier)
   damage = Math.round(damage * modifier);
   //console.log('HAND OF LIGHT', damage)
@@ -149,5 +149,9 @@ Ability.prototype.spendHolyPower = function(hp){
     this.paladin.holyPower = 0;
   }
 };
+
+Ability.prototype.versatility = function(damage){
+  return damage * (1 + this.paladin.stats.versatilityPercent/100);
+}
 
 module.exports = Ability;

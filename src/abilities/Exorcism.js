@@ -33,8 +33,8 @@ Exorcism.prototype.attempt = function(){
 };
 
 Exorcism.prototype.calculateDamage = function(){
-  var base = (this.paladin.stats.attackPower * 1.171)
-  * this.getModifier(this.name);
+  var base = this.versatility((this.paladin.stats.attackPower * 1.171)
+  * this.getModifier(this.name));
 
   return math.round(base);
 };
