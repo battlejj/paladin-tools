@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+  <meta charset="UTF-8">
+  <title></title>
+  <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    .nav, .pagination, .carousel, .panel-title a { cursor: pointer; }
+  </style>
+</head>
+<body ng-app="wt">
+  <div class="container">
+    <h2>Paladin</h2>
+    <div class="row">
+      <div ng-controller="home" class="col-lg-12">
+        <div wt-buffs></div>
+        <div wt-talents></div>
+        <h3>Stats</h3>
+        <div wt-crit></div>
+        <div wt-haste></div>
+        <div wt-mastery></div>
+
+      </div>
+    </div>
+  </div>
+<script src="//code.jquery.com/jquery-2.1.1.min.js"></script>
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+<script src="js/main.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.10.0/ui-bootstrap-tpls.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.10.0/ui-bootstrap.min.js"></script>
+</body>
+</html>

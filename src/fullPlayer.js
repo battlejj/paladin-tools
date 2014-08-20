@@ -610,13 +610,13 @@ module.exports = {
       "armor": 0,
       "weaponInfo": {
       "damage": {
-        "min": 25404,
-          "max": 38108,
-          "exactMin": 25404.89,
-          "exactMax": 38107
+        "min": 1142,
+          "max": 1715,
+          "exactMin": 1142,
+          "exactMax": 1715
       },
       "weaponSpeed": 3.6,
-        "dps": 8821.096
+        "dps": 396.8
     }
   }
 },
@@ -624,7 +624,7 @@ module.exports = {
   "health": 640281,
     "powerType": "mana",
     "power": 60000,
-    "str": 25499,
+    "str": 4029,
     "agi": 185,
     "sta": 35277,
     "int": 194,
@@ -633,14 +633,15 @@ module.exports = {
     "rangedAttackPower": 0,
     "pvpResilienceBonus": 0,
     "mastery": 54.28825,
-    "masteryRating": 12807,
+    "masteryRating": 607,
     "crit": 12.390166,
-    "critRating": 4423,
+    "critRating": 1223,
     "hitPercent": 6.217647,
     "hitRating": 2114,
     "haste": 38.397644,
-    "hasteRating": 16319,
+    "hasteRating": 1200,
     "hasteRatingPercent": 38.397648,
+    "multistrikeRating": 506,
     "expertiseRating": 3053,
     "spellPower": 184,
     "spellPen": 0,
@@ -888,11 +889,24 @@ module.exports = {
         "spell": {
           "id": 114157,
           "name": "Execution Sentence",
+          //"name": "Light\'s Hammer",
           "icon": "spell_paladin_executionsentence",
           "description": "A hammer slowly falls from the sky, causing 14,099 Holy damage over 10 sec. This damage is dealt slowly at first and increases over time, culminating in a final burst of damage.\n\n\n\nStay of Execution\n\nIf used on friendly targets, the falling hammer heals the target for 14,099 healing over 10 sec. This healing is dealt slowly at first and increases over time, culminating in a final burst of healing.",
           "range": "40 yd range",
           "castTime": "Instant",
           "cooldown": "1 min cooldown"
+        }
+      },
+      {
+        "tier": 6,
+        "column": 2,
+        "spell": {
+          "id": 157048,
+          "name": "Final Verdict",
+          "icon": "ability_paladin_finalverdict",
+          "description": "Empowers your weapon with holy energy, and performs a devastating strike, dealing 280% Holy damage.\n\nAlso increases the damage and radius of your next Divine Storm by 100%.\n\nReplaces Templar's Verdict.",
+          "range": "10 yd range",
+          "castTime": "Instant"
         }
       }
     ],
