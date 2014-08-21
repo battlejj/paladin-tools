@@ -1,6 +1,6 @@
 var talentsDirective = function(){
   return {
-    scope: true,
+    scope: false,
     restrict: 'AE',
     replace: 'true',
     templateUrl: 'views/talents.html',

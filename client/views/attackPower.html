@@ -1,0 +1,13 @@
+<form class="form-horizontal" role="form">
+  <div class="form-group" ng-class="{'has-error': attackPowerError, 'has-success': !attackPowerError}">
+    <label class="col-sm-5 control-label" for="attackPower">
+      Attack Power:
+    </label>
+    <div class="input-group col-sm-7">
+      <input class="form-control disabled" id="attackPower" type="number" ng-model="attackPower" disabled>
+      <div class="input-group-addon">{{buffedAttackPower}}</div>
+    </div>
+    <span ng-show="attackPowerError" class="help-block col-sm-offset-2">Attack Power must be a number above 1533 (base strength for lvl 100 paladin).</span>
+  </div>
+</form>
+

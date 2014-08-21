@@ -1,5 +1,5 @@
 <form class="form-horizontal" role="form">
-  <div class="form-group" ng-class="{'has-error': error, 'has-success': !error}">
+  <div class="form-group" ng-class="{'has-error': multistrikeError, 'has-success': !multistrikeError}">
     <label class="col-sm-5 control-label" for="multistrike-rating">
       Multistrike Rating:
     </label>
@@ -7,7 +7,7 @@
       <input class="form-control" id="multistrike-rating" type="number" ng-model="multistrikeRating">
       <div class="input-group-addon">{{multistrikePercent}}%</div>
     </div>
-    <span ng-show="error" class="help-block col-sm-offset-2">Multistrike Rating must be a number.</span>
+    <span ng-show="multistrikeError" class="help-block col-sm-offset-2">Multistrike Rating must be a number.</span>
   </div>
 </form>
 

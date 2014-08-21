@@ -2,7 +2,7 @@ var math = require('mathjs');
 
 var multistrikeDirective = function(){
   return {
-    scope: true,
+    scope: false,
     restrict: 'AE',
     replace: 'true',
     templateUrl: 'views/multistrike.html',
@@ -20,12 +20,12 @@ var multistrikeDirective = function(){
         var buff = scope.hasBuff('multistrike') ? 5 : 0;
         var multistrikePercent = math.round((scope.utils.ratingToPercent('multistrike', val) * 100) + buff, 2);
 
-        scope.multistrikePercent = isNaN(multistrikePercent) ? buff : multistrikePercent;
+        scope.multistrikePercent = isNaN(multistrikePercent) || scope.multistrikeRating < 0 ? buff : multistrikePercent;
 
-        if(isNaN(scope.multistrikeRating)){
-          scope.error = true;
+        if(isNaN(scope.multistrikeRating) || scope.multistrikeRating < 0){
+          scope.multistrikeError = true;
         } else {
-          scope.error = false;
+          scope.multistrikeError = false;
         }
       }
     }

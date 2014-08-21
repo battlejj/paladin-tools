@@ -1,7 +1,20 @@
 <div class="buffs">
   <h3>Buffs</h3>
-  <div>
-  <label ng-repeat="buff in buffList" class="btn btn-primary btn-xs btn-block" ng-model="buffs[buff.short]" btn-checkbox>{{buff.name}}</label>
+  <div class="row">
+    <div class="col-sm-12">
+    <a class="btn btn-xs btn-block btn-default btn-success" ng-click="raidBuff()">All</a>
+    <a class="btn btn-xs btn-block btn-default btn-danger" ng-click="noBuff()">None</a>
+    <br>
+    <label
+    ng-repeat="buff in buffList"
+    class="col-sm-6 btn btn-xs"
+    ng-class="{'btn-success': hasBuff(buff.short), 'btn-default': !hasBuff(buff.short)}"
+    ng-model="buffs[buff.short]"
+    btn-checkbox>
+    {{buff.name}}
+    <span class="glyphicon pull-right" ng-class="{'glyphicon-ok': hasBuff(buff.short)}"></span>
+    </label>
+    </div>
   </div>
   <!---<button ng-click="getBuffs()" class="btn btn-primary">Get Buffs</button>--->
 </div>

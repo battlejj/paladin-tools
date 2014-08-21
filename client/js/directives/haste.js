@@ -2,7 +2,7 @@ var math = require('mathjs');
 
 var hasteDirective = function(){
   return {
-    scope: true,
+    scope: false,
     restrict: 'AE',
     replace: 'true',
     templateUrl: 'views/haste.html',
@@ -20,12 +20,12 @@ var hasteDirective = function(){
         var buff = scope.hasBuff('haste') ? 5 : 0;
         var hastePercent = math.round((scope.utils.ratingToPercent('haste', val) * 100) + buff, 2);
 
-        scope.hastePercent = isNaN(hastePercent) ? buff : hastePercent;
+        scope.hastePercent = isNaN(hastePercent) || scope.hasteRating < 0 ? buff : hastePercent;
 
-        if(isNaN(scope.hasteRating)){
-          scope.error = true;
+        if(isNaN(scope.hasteRating) || scope.hasteRating < 0){
+          scope.hasteError = true;
         } else {
-          scope.error = false;
+          scope.hasteError = false;
         }
       }
     }

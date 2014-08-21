@@ -2,7 +2,7 @@ var math = require('mathjs');
 
 var strengthDirective = function(){
   return {
-    scope: true,
+    scope: false,
     restrict: 'AE',
     replace: 'true',
     templateUrl: 'views/strength.html',
@@ -22,11 +22,11 @@ var strengthDirective = function(){
 
         val = scope.strength;
         if(isNaN(val) || val < scope.baseStrength) {
-          scope.error = true;
+          scope.strengthError = true;
           buff = scope.hasBuff('stats') ? scope.baseStrength * .05 : 0;
           buffedStrength = math.round(scope.baseStrength + buff);
         } else {
-          scope.error = false;
+          scope.strengthError = false;
           buff = scope.hasBuff('stats') ? (scope.strength * .05) : 0;
           buffedStrength = math.round(val + buff);
         }

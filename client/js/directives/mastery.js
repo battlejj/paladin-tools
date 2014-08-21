@@ -2,7 +2,7 @@ var math = require('mathjs');
 
 var masteryDirective = function(){
   return {
-    scope: true,
+    scope: false,
     restrict: 'AE',
     replace: 'true',
     templateUrl: 'views/mastery.html',
@@ -24,12 +24,12 @@ var masteryDirective = function(){
 
         var masteryPercent = math.round(scope.baseMastery + (scope.utils.ratingToPercent('mastery', val + buff) * 100), 2);
 
-        scope.masteryPercent = isNaN(masteryPercent) ? math.round(scope.baseMastery + (scope.utils.ratingToPercent('mastery', buff) * 100), 2) : masteryPercent;
+        scope.masteryPercent = isNaN(masteryPercent) || scope.masteryRating < 0 ? math.round(scope.baseMastery + (scope.utils.ratingToPercent('mastery', buff) * 100), 2) : masteryPercent;
 
-        if(isNaN(scope.masteryRating)){
-          scope.error = true;
+        if(isNaN(scope.masteryRating) || scope.masteryRating < 0){
+          scope.masteryError = true;
         } else {
-          scope.error = false;
+          scope.masteryError = false;
         }
 
       }

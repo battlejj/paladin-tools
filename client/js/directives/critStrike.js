@@ -2,13 +2,12 @@ var math = require('mathjs');
 
 var critDirective = function(){
   return {
-    scope: true,
+    scope: false,
     restrict: 'AE',
     replace: 'true',
     templateUrl: 'views/crit.html',
     link: function(scope, elem, attrs) {
       scope.baseCrit = 5;
-      scope.error = false;
 
       scope.$watch('critRating', function(newVal, oldVal){
         updateCritPercent();
@@ -23,13 +22,12 @@ var critDirective = function(){
         var buff = scope.hasBuff('crit') ? 5 : 0;
 
         var critPercent = math.round(scope.baseCrit + (scope.utils.ratingToPercent('crit', val) * 100) + buff, 2);
-        scope.critPercent = isNaN(critPercent) ? scope.baseCrit + buff : critPercent;
+        scope.critPercent = isNaN(critPercent) || scope.critRating < 0 ? scope.baseCrit + buff : critPercent;
 
-        console.log(scope.critPercent);
-        if(isNaN(scope.critRating)){
-          scope.error = true;
+        if(isNaN(scope.critRating) || scope.critRating < 0){
+          scope.critError = true;
         } else {
-          scope.error = false;
+          scope.critError = false;
         }
       }
     }

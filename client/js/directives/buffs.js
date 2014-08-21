@@ -1,6 +1,6 @@
 var buffDirective = function(){
   return {
-    scope: true,
+    scope: false,
     restrict: 'AE',
     replace: 'true',
     templateUrl: 'views/buffs.html',

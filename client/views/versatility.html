@@ -1,0 +1,13 @@
+<form class="form-horizontal" role="form">
+  <div class="form-group" ng-class="{'has-error': versatilityError, 'has-success': !versatilityError}">
+    <label class="col-sm-5 control-label" for="versatility-rating">
+      Versatility Rating:
+    </label>
+    <div class="input-group col-sm-7">
+      <input class="form-control" id="versatility-rating" type="number" ng-model="versatilityRating">
+      <div class="input-group-addon">{{versatilityPercent}}%</div>
+    </div>
+    <span ng-show="versatilityError" class="help-block col-sm-offset-2">Versatility Rating must be a number.</span>
+  </div>
+</form>
+
