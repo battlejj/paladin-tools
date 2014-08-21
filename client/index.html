@@ -3,26 +3,41 @@
 <head lang="en">
   <meta charset="UTF-8">
   <title></title>
-  <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
+  <!---<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">--->
+  <link href="css/bootstrap.css" rel="stylesheet">
+
   <style>
     .nav, .pagination, .carousel, .panel-title a { cursor: pointer; }
+    body { margin-top: 60px; }
   </style>
 </head>
 <body ng-app="wt">
+  <div class="navbar navbar-paladin navbar-fixed-top">
+    <a class="navbar-brand" href="./">WarcraftTools - Paladin</a>
+  </div>
+
   <div class="container">
-    <h2>Paladin</h2>
     <div class="row">
       <div ng-controller="home" class="col-lg-12">
-        <div wt-buffs></div>
-        <div wt-talents></div>
-        <h3>Stats</h3>
-        <div wt-crit></div>
-        <div wt-haste></div>
-        <div wt-mastery></div>
-        <div wt-multistrike></div>
-        <div wt-strength></div>
+        <div class="row">
+          <div class="col-sm-3 col-md-2 sidebar">
+            <div wt-buffs></div>
+            <div wt-talents></div>
+          </div>
 
-
+          <div class="col-sm-6 col-md-7">
+            Middle
+          </div>
+          <div class="col-sm-3 col-md-3 sidebar">
+            <h3>Stats</h3>
+            <div wt-crit></div>
+            <div wt-haste></div>
+            <div wt-mastery></div>
+            <div wt-multistrike></div>
+            <div wt-versatility></div>
+            <div wt-strength></div>
+          </div>
+        </div>
       </div>
     </div>
   </div>

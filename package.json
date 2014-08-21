@@ -10,14 +10,16 @@
     "lodash": "~2.4.1",
     "mathjs": "~0.25.0",
     "debug": "~1.0.4",
-    "chai": "~1.9.1"
+    "chai": "~1.9.1",
+    "gulp": "^3.8.7",
+    "gulp-less": "^1.3.5"
   },
   "devDependencies": {
     "mocha": "~1.21.3"
   },
   "scripts": {
-    "test": "mocha"
-    , "browserify": "node_modules/.bin/cmd.js"
+    "test": "mocha",
+    "browserify": "node_modules/.bin/cmd.js"
   },
   "repository": {
     "type": "git",

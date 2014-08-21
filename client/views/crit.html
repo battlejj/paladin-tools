@@ -1,9 +1,9 @@
 <form class="form-horizontal" role="form">
   <div class="form-group" ng-class="{'has-error': error, 'has-success': !error}">
-    <label class="col-sm-2 control-label" for="crit-rating">
+    <label class="col-sm-5 control-label text-left" for="crit-rating">
       Crit Rating:
     </label>
-    <div class="input-group col-sm-2">
+    <div class="input-group col-sm-7">
       <input class="form-control" id="crit-rating" type="number" ng-model="critRating" ui-event="{ blur : 'blurCallback($event)' }">
       <div class="input-group-addon">{{critPercent}}%</div>
     </div>
