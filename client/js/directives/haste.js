@@ -18,7 +18,15 @@ var hasteDirective = function(){
       function updateHastePercent(){
         var val = scope.hasteRating;
         var buff = scope.hasBuff('haste') ? 5 : 0;
-        scope.hastePercent = math.round((scope.utils.ratingToPercent('haste', val) * 100) + buff, 2);
+        var hastePercent = math.round((scope.utils.ratingToPercent('haste', val) * 100) + buff, 2);
+
+        scope.hastePercent = isNaN(hastePercent) ? buff : hastePercent;
+
+        if(isNaN(scope.hasteRating)){
+          scope.error = true;
+        } else {
+          scope.error = false;
+        }
       }
     }
   };

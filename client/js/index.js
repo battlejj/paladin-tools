@@ -9,6 +9,8 @@ var talents = require('./directives/talents');
 var crit = require('./directives/critStrike');
 var haste = require('./directives/haste');
 var mastery = require('./directives/mastery');
+var multistrike = require('./directives/multistrike');
+var strength = require('./directives/strength');
 
 
 angular.module('wt.paladin', [])
@@ -18,8 +20,10 @@ angular.module('wt.paladin', [])
   .directive('wtCrit', crit)
   .directive('wtHaste', haste)
   .directive('wtMastery', mastery)
+  .directive('wtMultistrike', multistrike)
+  .directive('wtStrength', strength)
 
-  angular.module('wt', ['wt.paladin',  'ui.bootstrap'])
+angular.module('wt', ['wt.paladin',  'ui.bootstrap', 'ui.utils'])
   .controller('home', function($scope, ret){
     $scope.buffs = {};
     $scope.talents = {};
@@ -27,8 +31,11 @@ angular.module('wt.paladin', [])
     $scope.critRating = 0;
     $scope.hasteRating = 0;
     $scope.masteryRating = 0;
+    $scope.multistrikeRating = 0;
+    $scope.strength = 1533;
 
-    $scope.getBuffs = function(){
+
+      $scope.getBuffs = function(){
       var buffsArray = [];
       for(var k in $scope.buffs){
         if($scope.buffs.hasOwnProperty(k) && $scope.buffs[k]){

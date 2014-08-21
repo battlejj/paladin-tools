@@ -1,12 +1,13 @@
 <form class="form-horizontal" role="form">
-  <div class="form-group">
+  <div class="form-group" ng-class="{'has-error': error, 'has-success': !error}">
     <label class="col-sm-2 control-label" for="haste-rating">
       Haste Rating:
     </label>
     <div class="input-group col-sm-2">
-      <input class="form-control" id="haste-rating" ng-model="hasteRating">
+      <input class="form-control" id="haste-rating" type="number" ng-model="hasteRating">
       <div class="input-group-addon">{{hastePercent}}%</div>
     </div>
+    <span ng-show="error" class="help-block col-sm-offset-2">Haste Rating must be a number.</span>
   </div>
 </form>
 

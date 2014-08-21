@@ -1,0 +1,13 @@
+<form class="form-horizontal" role="form">
+  <div class="form-group" ng-class="{'has-error': error, 'has-success': !error}">
+    <label class="col-sm-2 control-label" for="strength">
+      Strength:
+    </label>
+    <div class="input-group col-sm-2">
+      <input class="form-control" id="strength" type="number" ng-model="strength">
+      <div class="input-group-addon">{{buffedStrength}}</div>
+    </div>
+    <span ng-show="error" class="help-block col-sm-offset-2">Strength must be a number above 1533 (base strength for lvl 100 paladin).</span>
+  </div>
+</form>
+

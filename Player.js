@@ -115,7 +115,7 @@ Player.prototype.buffMultistrikePercent = function(){
 };
 
 Player.prototype.buffVersatilityPercent = function(){
-  //Increase multistrike by 3%
+  //Increase versatility by 3%
   var buff = 3 * percent;
   this.stats.buffed.versatilityPercent = math.round(this.stats.unbuffed.versatilityPercent + buff, 4);
 
