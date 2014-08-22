@@ -24,7 +24,7 @@ LightsHammer.prototype.tick = function(){
     && this.tickCount > 0
     && (this.paladin.timeline.time - this.lastTick >= 2)){
     damage = this.calculateDamage();
-    crit = utils.isCrit(this.paladin.stats.critPercent);
+    crit = utils.isCrit(this.paladin.stats.buffed.critPercent);
     this.paladin.log(this.name, crit ? damage * 2 : damage, crit, false);
     this.multistrike(this.name, damage);
     this.lastTick = this.paladin.timeline.time;
@@ -33,7 +33,7 @@ LightsHammer.prototype.tick = function(){
 };
 
 LightsHammer.prototype.calculateDamage = function(){
-  var base = this.paladin.stats.spellPower * .51678 * this.paladin.enemies;
+  var base = this.paladin.stats.buffed.spellPower * .51678 * this.paladin.enemies;
 
   return Math.round(this.versatility(base * this.getModifier(this.name)));
 };

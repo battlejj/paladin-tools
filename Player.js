@@ -13,6 +13,7 @@ function Player(data, buffs){
     unbuffed: {}
   };
 
+  this.talents = data.talents;
   //Paladins by default has crit and mastery %
   this.baseCrit = constants.wod.baseStats.crit * percent;
   this.baseMastery = constants.wod.baseStats.mastery * percent;
@@ -20,14 +21,14 @@ function Player(data, buffs){
   //Handle Primary Stats
   this.stats.unbuffed.strength = this.stats.unbuffed.attackPower
     = this.stats.unbuffed.spellPower
-    = data.strength || constants.wod.baseStats.strength;
+    = data.stats.strength || constants.wod.baseStats.strength;
 
   //Handle Secondary Stat Ratings
-  this.stats.unbuffed.critRating = data.critRating || 0;
-  this.stats.unbuffed.hasteRating = data.hasteRating || 0;
-  this.stats.unbuffed.masteryRating = data.masteryRating || 0;
-  this.stats.unbuffed.multistrikeRating = data.multistrikeRating || 0;
-  this.stats.unbuffed.versatilityRating = data.versatilityRating || 0;
+  this.stats.unbuffed.critRating = data.stats.critRating || 0;
+  this.stats.unbuffed.hasteRating = data.stats.hasteRating || 0;
+  this.stats.unbuffed.masteryRating = data.stats.masteryRating || 0;
+  this.stats.unbuffed.multistrikeRating = data.stats.multistrikeRating || 0;
+  this.stats.unbuffed.versatilityRating = data.stats.versatilityRating || 0;
 
   //Handle Secondary Stat Percents
   this.stats.unbuffed.critPercent = this.baseCrit + utils.ratingToPercent('crit', this.stats.unbuffed.critRating);
@@ -68,6 +69,8 @@ function Player(data, buffs){
     this.buffAttackPower();
   }
 
+  console.log(this.stats.buffed);
+
 };
 
 Player.prototype.buffStat = function(stat){
@@ -93,7 +96,10 @@ Player.prototype.buffMasteryPercent = function(){
   var buffedRating = this.stats.unbuffed.masteryRating + buff;
   //Add mastery attunement, 5% increase mastery from all sources
   var attunedPercent = utils.ratingToPercent('mastery', buffedRating) * 1.05;
-  this.stats.buffed.masteryPercent = math.round(this.baseMastery + attunedPercent, 4);
+  var masteryPercent = math.round(this.baseMastery + attunedPercent, 4);
+
+  this.stats.buffed.masteryPercent = isNaN(masteryPercent) || this.stats.unbuffed.masteryRating < 0
+  ? math.round(this.baseMastery + (utils.ratingToPercent('mastery', buff) * 100) * 1.05, 4) : masteryPercent;
 
   return this.stats.buffed.masteryPercent;
 };
@@ -124,8 +130,8 @@ Player.prototype.buffVersatilityPercent = function(){
 
 Player.prototype.buffAttackPower = function(){
   //Increase attack power by 10%
-  var buff = 10 * percent;
-  this.stats.buffed.versatilityPercent = math.round(this.stats.unbuffed.attackPower + buff, 4);
+  var buff = 10 * percent * this.stats.buffed.strength;
+  this.stats.buffed.attackPower = this.stats.buffed.spellPower = math.round(this.stats.buffed.strength + buff);
 }
 
 Player.prototype.resetBuffs = function(){

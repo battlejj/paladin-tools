@@ -17,7 +17,7 @@ var versatilityDirective = function(){
 
       function updateVersatilityPercent(){
         var val = scope.versatilityRating;
-        var buff = scope.hasBuff('versatility') ? 5 : 0;
+        var buff = scope.hasBuff('versatility') ? 3 : 0;
         var versatilityPercent = math.round((scope.utils.ratingToPercent('versatility', val) * 100) + buff, 2);
 
         scope.versatilityPercent = isNaN(versatilityPercent) || scope.versatilityRating < 0 ? buff : versatilityPercent;

@@ -21,7 +21,7 @@ HammerOfWrath.prototype.attempt = function(){
   }
 
   var damage = this.calculateDamage();
-  var crit = utils.isCrit(this.paladin.stats.critPercent);
+  var crit = utils.isCrit(this.paladin.stats.buffed.critPercent);
   this.paladin.log(this.name, crit ? damage * 2 : damage, crit, false);
   this.cooldown = this.paladin.isAvengingWrathing() ? this.getHastedCooldown()/2 : this.getHastedCooldown();
 
@@ -33,7 +33,7 @@ HammerOfWrath.prototype.attempt = function(){
 };
 
 HammerOfWrath.prototype.calculateDamage = function(){
-  var base = this.versatility((this.paladin.stats.spellPower * 2.112)
+  var base = this.versatility((this.paladin.stats.buffed.spellPower * 2.112)
     * this.getModifier(this.name));
 
   return math.round(base);

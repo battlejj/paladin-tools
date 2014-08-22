@@ -25,7 +25,7 @@ ExecutionSentence.prototype.tick = function(){
   && this.tickCount > 0
   && (this.paladin.timeline.time - this.lastTick >= 1)){
     damage = this.calculateDamage();
-    crit = utils.isCrit(this.paladin.stats.critPercent);
+    crit = utils.isCrit(this.paladin.stats.buffed.critPercent);
     this.paladin.log(this.name, crit ? damage * 2 : damage, crit, false);
     this.multistrike(this.name, damage);
     this.lastTick = this.paladin.timeline.time;
@@ -34,7 +34,7 @@ ExecutionSentence.prototype.tick = function(){
 };
 
 ExecutionSentence.prototype.calculateDamage = function(){
-  var base = this.paladin.stats.spellPower * 9142/1000;
+  var base = this.paladin.stats.buffed.spellPower * 9142/1000;
 
   //The amount of damage done depends on what tick we are currently on
   return Math.round(this.versatility(base

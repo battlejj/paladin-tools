@@ -3,14 +3,18 @@ var AutoAttack = require('./AutoAttack')
   , AvengingWrath = require('./AvengingWrath')
   , Censure = require('./Censure')
   , CrusaderStrike = require('./CrusaderStrike')
+  , DivinePurpose = require('./DivinePurpose')
+  , EmpoweredSeals = require('./EmpoweredSeals')
   , ExecutionSentence = require('./ExecutionSentence')
   , Exorcism = require('./Exorcism')
   , FinalVerdict = require('./FinalVerdict')
   , HammerOfWrath = require('./HammerOfWrath')
   , HolyAvenger = require('./HolyAvenger')
+  , HolyPrism = require('./HolyPrism')
   , Judgment = require('./Judgment')
   , LightsHammer = require('./LightsHammer')
   , TemplarsVerdict = require('./TemplarsVerdict')
+  , Seraphim = require('./Seraphim')
   ;
 
 /*
@@ -21,18 +25,18 @@ var abilities = {
   , AvengingWrath: AvengingWrath
   , Censure: Censure
   , CrusaderStrike: CrusaderStrike
-  , DivinePurpose: {}
-  , EmpoweredSeals: {}
+  , DivinePurpose: DivinePurpose
+  , EmpoweredSeals: EmpoweredSeals
   , ExecutionSentence: ExecutionSentence
   , Exorcism: Exorcism
   , FinalVerdict: FinalVerdict
   , HammerOfWrath: HammerOfWrath
   , HolyAvenger: HolyAvenger
-  , HolyPrism: {}
+  , HolyPrism: HolyPrism
   , Judgment: Judgment
   , LightsHammer: LightsHammer
   , TemplarsVerdict: TemplarsVerdict
-  , Seraphim: {}
+  , Seraphim: Seraphim
 };
 
 module.exports = abilities;

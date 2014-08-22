@@ -22,7 +22,7 @@ Exorcism.prototype.attempt = function(){
   }
 
   var damage = this.calculateDamage();
-  var crit = utils.isCrit(this.paladin.stats.critPercent);
+  var crit = utils.isCrit(this.paladin.stats.buffed.critPercent);
   this.paladin.log(this.name, crit ? damage * 2 : damage, crit, false);
   this.cooldown = this.baseCooldown;
 
@@ -33,7 +33,7 @@ Exorcism.prototype.attempt = function(){
 };
 
 Exorcism.prototype.calculateDamage = function(){
-  var base = this.versatility((this.paladin.stats.attackPower * 1.171)
+  var base = this.versatility((this.paladin.stats.buffed.attackPower * 1.171)
   * this.getModifier(this.name));
 
   return math.round(base);

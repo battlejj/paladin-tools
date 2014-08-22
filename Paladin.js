@@ -17,18 +17,18 @@ var constants = require('./src/lib/constants.js')
  @duration[number]: how long to run the sim
  @inactiveSpec[boolean]: use secondary spec
  */
-function Paladin(){
-  Player.call(this, arguments);
+function Paladin(data, buffs){
+  Player.apply(this, arguments);
   var that = this;
   this.abilities = {};
   this.currentSeal = 'Seal of Truth';
   //TODO: Make # of enemies configurable, add AoE rotation in addition to single target
   this.enemies = 1;
   this.holyPower = 0;
-  this.damageStats = {};
+  this.damageStats = {abilities: {}, counts: {}, extras:{}};
 
   this.configureDraenorPerks();
-  this.configureWeapon();
+  this.configureWeapon(data.weapon);
   this.resetTimeline();
 
   for(var n in abilities){
@@ -45,50 +45,50 @@ Paladin.prototype = Object.create(Player.prototype);
 Paladin.prototype.constructor = Paladin;
 
 Paladin.prototype.configureAbilities = function(){
-
-  if(!_.where(this.talents, {'spell': {'name': 'Holy Avenger' } }).length){
+  console.log('TALENTS', this.talents)
+  if(this.talents.indexOf('Holy Avenger') == -1){
     debug('Holy Avenger talent not found, removing ability');
     this.abilities.HolyAvenger.enabled = true;
   }
 
-  if(!_.where(this.talents, {'spell': {'name': 'Sanctified Wrath' } }).length) {
+  if(this.talents.indexOf('Sanctified Wrath') == -1){
     debug('Sanctified Wrath talent not found, will not modify Avenging Wrath');
   } else {
     debug('Found Sanctified Wrath, extend Avenging Wrath duration to 30 seconds');
     this.abilities.AvengingWrath.baseDuration = 30;
   }
 
-  if(!_.where(this.talents, {'spell': {'name': 'Divine Purpose' } }).length){
+  if(this.talents.indexOf('Divine Purpose') == -1){
     debug('Divine Purpose talent not found, removing ability');
     this.abilities.DivinePurpose.enabled = false;
   }
 
-  if(!_.where(this.talents, {'spell': {'name': 'Holy Prism' } }).length){
+  if(this.talents.indexOf('Holy Prism') == -1){
     debug('Holy Prism talent not found, removing ability');
     this.abilities.HolyPrism.enabled = false;
   }
 
-  if(_.where(this.talents, {'spell': {'name': 'Light\'s Hammer' } }).length){
+  if(this.talents.indexOf('Light\'s Hammer') != -1){
     debug('Light\'s Hammer found, adding ability');
     this.abilities.LightsHammer.enabled = true;
   }
 
-  if(_.where(this.talents, {'spell': {'name': 'Execution Sentence' } }).length){
+  if(this.talents.indexOf('Execution Sentence') != -1){
     debug('Execution Sentence found, adding ability');
     this.abilities.ExecutionSentence.enabled = true;
   }
 
-  if(!_.where(this.talents, {'spell': {'name': 'Empowered Seals' } }).length){
+  if(this.talents.indexOf('Empowered Seals') == -1){
     debug('Empowered Seals talent not found, removing ability');
     this.abilities.EmpoweredSeals.enabled = false;
   }
 
-  if(!_.where(this.talents, {'spell': {'name': 'Seraphim' } }).length){
+  if(this.talents.indexOf('Seraphim') == -1){
     debug('Seraphim talent not found, removing ability');
     this.abilities.Seraphim.enabled = false;
   }
 
-  if(!_.where(this.talents, {'spell': {'name': 'Final Verdict' } }).length){
+  if(this.talents.indexOf('Final Verdict') == -1){
     debug('Final Verdict talent not found, removing ability');
     this.abilities.FinalVerdict.enabled = false;
     this.abilities.TemplarsVerdict.enabled = true;
@@ -179,20 +179,24 @@ Paladin.prototype.log = function(ability, damage, isCrit, isMultistrike, isBuff,
   };
 
   if(damage !== 0){
-    this.damageStats[ability] = this.damageStats[ability] ? this.damageStats[ability] + damage : damage;
+    if(isNaN(damage)){
+      console.log('PROBLEM WITH ABILITY RETURNING NAN: %s', ability)
+    }
+    this.damageStats.abilities[ability] = this.damageStats.abilities[ability] ? this.damageStats.abilities[ability] + damage : damage;
 
-    this.damageStats[ability + ' Count'] = this.damageStats[ability + ' Count'] ? this.damageStats[ability + ' Count'] + 1 : 1;
+    this.damageStats.counts[ability] = this.damageStats.counts[ability] ? this.damageStats.counts[ability] + 1 : 1;
     this.damageStats['total'] = this.damageStats['total'] ? this.damageStats['total'] + damage : damage;
 
     if(isCrit){
-      this.damageStats['crit'] = this.damageStats['crit'] ? this.damageStats['crit'] + damage : damage;
-      this.damageStats['critCount'] = this.damageStats['critCount'] ? this.damageStats['critCount'] + 1 : 1;
+      this.damageStats.extras['crit'] = this.damageStats.extras['crit'] ? this.damageStats.extras['crit'] + damage : damage;
+      this.damageStats.extras['critCount'] = this.damageStats.extras['critCount'] ? this.damageStats.extras['critCount'] + 1 : 1;
     }
 
     if(isMultistrike){
-      this.damageStats['multi'] = this.damageStats['multi'] ? this.damageStats['multi'] + damage : damage;
-      this.damageStats['multiCount'] = this.damageStats['multiCount'] ? this.damageStats['multiCount']+ 1 : 1;
+      this.damageStats.extras['multi'] = this.damageStats.extras['multi'] ? this.damageStats.extras['multi'] + damage : damage;
+      this.damageStats.extras['multiCount'] = this.damageStats.extras['multiCount'] ? this.damageStats.extras['multiCount']+ 1 : 1;
     }
+
   }
 
   return this.timeline.log[this.timeline.log.length-1];
@@ -220,6 +224,7 @@ Paladin.prototype.simulate = function(){
     this.abilities.Judgment.attempt();
     this.abilities.Exorcism.attempt();
   }
+
   if(this.timeline.time >= this.timeline.duration){
     return this.damageStats;
   } else {
@@ -233,7 +238,7 @@ Paladin.prototype.resetTimeline = function(){
   this.timeline.time = 0;
   this.timeline.gcd = 0;
   this.timeline.log = [];
-  this.damageStats = {};
+  this.damageStats = {abilities: {}, counts: {}, extras:{}};
 
   for(var n in this.abilities) {
     if(this.abilities.hasOwnProperty(n)){
@@ -246,6 +251,7 @@ Paladin.prototype.resetTimeline = function(){
 Paladin.prototype.start = function(duration, sims){
   this.damageStats = {};
   this.resetTimeline();
+  this.timeline.duration = duration || 360;
   sims = sims || 1;
 
   console.log('Run %s sims', sims)
@@ -258,6 +264,7 @@ Paladin.prototype.start = function(duration, sims){
         results[k] = results[k] ? (results[k] + sim[k]) : sim[k];
       }
     }
+    console.log(sim)
     this.resetTimeline();
   }
 
@@ -267,7 +274,7 @@ Paladin.prototype.start = function(duration, sims){
     }
   }
 
-  return results;
+  return sim;
 }
 
 Paladin.prototype.calculateWeaponSwing = function(){

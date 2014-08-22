@@ -30,7 +30,7 @@ Censure.prototype.tick = function(){
   if(this.stacks > 0
     && ((time - this.lastTick >= this.baseCooldown) || time === this.lastApplied)){
     var damage = this.calculateDamage();
-    var crit = utils.isCrit(this.paladin.stats.critPercent);
+    var crit = utils.isCrit(this.paladin.stats.buffed.critPercent);
     this.paladin.log(this.name, crit ? damage * 2 : damage, crit, false);
     /*
      Currently assuming censure cannot multistrike. If it can uncomment out the following line:
@@ -41,7 +41,7 @@ Censure.prototype.tick = function(){
 };
 
 Censure.prototype.calculateDamage = function(){
-  return math.round(this.versatility(((this.paladin.stats.spellPower * .05148) * this.stacks) * this.getModifier(this.name)));
+  return math.round(this.versatility(((this.paladin.stats.buffed.spellPower * .05148) * this.stacks) * this.getModifier(this.name)));
 };
 
 Censure.prototype.applyCensure = function(){

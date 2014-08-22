@@ -22,9 +22,9 @@ var masteryDirective = function(){
         var buff = scope.hasBuff('mastery') ? 550 : 0;
         var combinedRating = val + buff;
 
-        var masteryPercent = math.round(scope.baseMastery + (scope.utils.ratingToPercent('mastery', val + buff) * 100), 2);
+        var masteryPercent = math.round(scope.baseMastery + (scope.utils.ratingToPercent('mastery', val + buff) * 1.05 * 100), 2);
 
-        scope.masteryPercent = isNaN(masteryPercent) || scope.masteryRating < 0 ? math.round(scope.baseMastery + (scope.utils.ratingToPercent('mastery', buff) * 100), 2) : masteryPercent;
+        scope.masteryPercent = isNaN(masteryPercent) || scope.masteryRating < 0 ? math.round(scope.baseMastery + (scope.utils.ratingToPercent('mastery', buff) * 1.05 * 100), 2) : masteryPercent;
 
         if(isNaN(scope.masteryRating) || scope.masteryRating < 0){
           scope.masteryError = true;

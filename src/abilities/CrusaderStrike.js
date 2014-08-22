@@ -22,7 +22,7 @@ CrusaderStrike.prototype.attempt = function(){
   }
 
   var damage = this.calculateDamage();
-  var crit = utils.isCrit(this.paladin.stats.critPercent);
+  var crit = utils.isCrit(this.paladin.stats.buffed.critPercent);
   this.paladin.log(this.name, crit ? damage * 2 : damage, crit, false);
   this.cooldown = this.getHastedCooldown();
 
