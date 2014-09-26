@@ -29,7 +29,7 @@
             <h4>Results will display below.</h4>
             <button ng-click="sim()" class="btn btn-primary btn-block">Start Sim</button>
             <div google-chart chart="damageBreakdown"></div>
-
+            <div id="googlepie" style="width: 900px; height: 500px;"></div>
             <div class="alert alert-info">{{dps}}</div>
           </div>
           <div class="col-sm-3 col-md-3 sidebar">
@@ -48,15 +48,16 @@
     </div>
   </div>
   <br><br><br><br><br>
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<script type="text/javascript">
+  google.load("visualization", "1", {packages:["corechart"]});
+</script>
 <script src="//code.jquery.com/jquery-2.1.1.min.js"></script>
 <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 <script src="js/main.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.10.0/ui-bootstrap-tpls.min.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.10.0/ui-bootstrap.min.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-utils/0.1.1/angular-ui-utils.min.js"></script>
-<script type="text/javascript" src="https://www.google.com/jsapi"></script>
-<script type="text/javascript">
-  google.load("visualization", "1", {packages:["corechart"]});
-</script>
+
 </body>
 </html>

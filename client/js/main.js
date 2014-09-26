@@ -986,12 +986,30 @@ angular.module('wt', ['wt.paladin',  'ui.bootstrap', 'ui.utils', 'googlechart'])
         {id: "t", label: "Topping", type: "string"},
         {id: "s", label: "Slices", type: "number"}
       ]};
+
+      var testData = [['Ability', 'Damage Done']]
       $scope.damageBreakdown.type = 'PieChart';
       for(var k in results.abilities){
         if(results.abilities.hasOwnProperty(k)){
           $scope.damageBreakdown.data.rows.push({'c': [ {v: k}, {v: results.abilities[k]}]});
+          testData.push([k, results.abilities[k]]);
         }
       }
+
+      var options = {
+        title: 'Damage Breakdown',
+        is3D: true
+      };
+
+
+      console.log('TEST DATA', testData)
+      var chartData = google.visualization.arrayToDataTable(testData);
+      console.log('CHART DATA', chartData);
+
+      var chart = new google.visualization.PieChart(document.getElementById('googlepie'));
+      chart.draw(chartData, options);
+
+
 
       $scope.dps = results.total/360;
 
